@@ -1,0 +1,11 @@
+[providers]
+providers = ["python"]
+
+[nix]
+pkgs = ["ffmpeg", "libsndfile"]
+
+[phases.build]
+cmds = ["pip install -r requirements.txt"]
+
+[start]
+cmd = "gunicorn app:app --bind 0.0.0.0:$PORT --timeout 180 --workers 1 --threads 8"
