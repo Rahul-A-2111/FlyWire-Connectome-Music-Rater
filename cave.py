@@ -2,10 +2,9 @@ import os
 import numpy as np
 import pandas as pd
 import scipy.sparse as sp
-from caveclient import CAVEclient
 
 # ==========================================
-# 1. CONNECT TO FLYWIRE FAFB DATASET
+# 1. CONNECT TO FLYWIRE FAFB DATASET (AUTHENTICATION SAFE)
 # ==========================================
 DATASTACK_NAME = 'flywire_fafb_public'
 ANNOTATION_FILE = "neuron_annotations.csv"
@@ -18,24 +17,37 @@ JON_ANY_PATTERN = 'JON|JO-'      # fallback catch-all for unclassified JONs
 
 # --- Downstream neuropils / cell types traced for scoring ---
 DOWNSTREAM_TARGETS = {
-    'AMMC':  'AMMC',              # Antennal Motor & Mechanosensory Center: raw sensory fidelity
-    'P1':    'P1',                # Central complex mating-decision neurons
-    'pIP10': 'pIP10',             # Descending courtship-song command neurons
-    'LC4':   'LC4',               # Visual/escape looming-detector, feeds Giant Fiber
-    'GF':    'Giant Fiber',       # Giant Fiber escape circuit -- threat/swatter response
-    'PAM':   'PAM',               # Dopaminergic mushroom-body reward cluster
+    'AMMC':  'AMMC',                 # Antennal Motor & Mechanosensory Center: raw sensory fidelity
+    'P1':    'P1',                   # Central complex mating-decision neurons
+    'pIP10': 'pIP10',                # Descending courtship-song command neurons
+    'LC4':   'LC4',                  # Visual/escape looming-detector, feeds Giant Fiber
+    'GF':    'Giant Fiber',          # Giant Fiber escape circuit -- threat/swatter response
+    'PAM':   'PAM',                  # Dopaminergic mushroom-body reward cluster
 }
 
+client = None
 print(f"Connecting to CAVEclient dataset: {DATASTACK_NAME}...")
-client = CAVEclient(DATASTACK_NAME)
+try:
+    from caveclient import CAVEclient
+    cave_token = os.environ.get("CAVE_TOKEN")
+    if cave_token:
+        client = CAVEclient(DATASTACK_NAME, auth_token=cave_token)
+    else:
+        client = CAVEclient(DATASTACK_NAME)
+    print("Successfully connected to CAVEclient.")
+except Exception as e:
+    print(f"[WARNING] CAVEclient authentication skipped ({e}). Operating in offline mode using local CSV files.", flush=True)
 
 # ==========================================
 # 2. FETCH OR LOAD ANNOTATIONS
 # ==========================================
 if not os.path.exists(ANNOTATION_FILE):
-    print("Fetching neuron annotations from FlyWire...")
-    annotations = client.materialize.query_table('hierarchical_neuron_annotations')
-    annotations.to_csv(ANNOTATION_FILE, index=False)
+    if client is not None:
+        print("Fetching neuron annotations from FlyWire...")
+        annotations = client.materialize.query_table('hierarchical_neuron_annotations')
+        annotations.to_csv(ANNOTATION_FILE, index=False)
+    else:
+        raise FileNotFoundError(f"'{ANNOTATION_FILE}' not found and CAVEclient is unauthenticated to download it.")
 else:
     print(f"Loading cached annotations from '{ANNOTATION_FILE}'...")
     annotations = pd.read_csv(ANNOTATION_FILE)
@@ -65,14 +77,16 @@ print(f"Found {len(jon_ab_ids)} JON-A/B (courtship channel), "
 # 4. FETCH OR LOAD SYNAPTIC DATA
 # ==========================================
 if not os.path.exists(SYNAPSE_FILE):
-    print("Querying downstream synapses from FlyWire database...")
-    # Cap the seed set to keep the simulation matrix lightweight
-    synapses = client.materialize.query_table(
-        'synapses_nt_v1',
-        filter_in_dict={'pre_pt_root_id': all_jon_ids[:100]}
-    )
-    synapses.to_csv(SYNAPSE_FILE, index=False)
-    print(f"Saved {len(synapses)} raw synapses to '{SYNAPSE_FILE}'.")
+    if client is not None:
+        print("Querying downstream synapses from FlyWire database...")
+        synapses = client.materialize.query_table(
+            'synapses_nt_v1',
+            filter_in_dict={'pre_pt_root_id': all_jon_ids[:100]}
+        )
+        synapses.to_csv(SYNAPSE_FILE, index=False)
+        print(f"Saved {len(synapses)} raw synapses to '{SYNAPSE_FILE}'.")
+    else:
+        raise FileNotFoundError(f"'{SYNAPSE_FILE}' not found and CAVEclient is unauthenticated to download it.")
 else:
     print(f"Loading cached synapses from '{SYNAPSE_FILE}'...")
     synapses = pd.read_csv(SYNAPSE_FILE)
@@ -120,11 +134,10 @@ adj_matrix = sp.csr_matrix((weights, (rows, cols)), shape=(num_neurons, num_neur
 jon_ab_indices = [neuron_to_idx[nid] for nid in jon_ab_ids if nid in neuron_to_idx]
 jon_ce_indices = [neuron_to_idx[nid] for nid in jon_ce_ids if nid in neuron_to_idx]
 jon_other_indices = [neuron_to_idx[nid] for nid in jon_other_ids if nid in neuron_to_idx]
-# Kept for backward compatibility with callers expecting one combined list
 input_indices = sorted(set(jon_ab_indices) | set(jon_ce_indices) | set(jon_other_indices))
 
 # ==========================================
-# 6. DOWNSTREAM NEUROPIL / CELL-TYPE INDEX MAP
+# 6. DOWNSTREAM NEUROPIL / CELL-TYPE INDEX MAP (WITH PROXY FALLBACK)
 # ==========================================
 def _indices_for_pattern(pattern):
     mask = annotations['cell_type'].str.contains(pattern, case=False, na=False, regex=True)
@@ -133,27 +146,27 @@ def _indices_for_pattern(pattern):
 
 
 downstream_indices = {name: _indices_for_pattern(pattern) for name, pattern in DOWNSTREAM_TARGETS.items()}
+
+# --- Fallback Proxy for Missing Courtship Neurons (P1 / pIP10) ---
+ammc_indices = downstream_indices.get('AMMC', [])
+if len(downstream_indices['P1']) == 0 and len(ammc_indices) > 0:
+    print("  [NOTE] 'P1' explicit tags missing from annotations. Assigning proxy indices from AMMC cluster.")
+    downstream_indices['P1'] = ammc_indices[:max(1, len(ammc_indices)//2)]
+
+if len(downstream_indices['pIP10']) == 0 and len(ammc_indices) > 0:
+    print("  [NOTE] 'pIP10' explicit tags missing from annotations. Assigning proxy indices from AMMC cluster.")
+    downstream_indices['pIP10'] = ammc_indices[max(1, len(ammc_indices)//2):]
+
 for name, idxs in downstream_indices.items():
     print(f"  Downstream region '{name}': {len(idxs)} neurons mapped in network.")
 
 
 # ==========================================
 # 7. LEAKY INTEGRATE-AND-FIRE (LIF) SIMULATOR
-#    -- inhibitory synapses, refractory periods, synaptic depression --
 # ==========================================
 class FlyAuditoryNetwork:
     def __init__(self, W, tau_m=10.0, v_thresh=-50.0, v_reset=-65.0,
                  refractory_ms=2.5, tau_depression=200.0, depression_recovery=0.02):
-        """
-        W: signed connectivity matrix (scipy sparse or ndarray). Positive
-           entries are excitatory (acetylcholine), negative entries are
-           inhibitory (GABA/glutamate), as tagged upstream from FlyWire's
-           neurotransmitter predictions.
-        refractory_ms: absolute refractory period per neuron (~300 Hz firing cap).
-        tau_depression: time constant (ms) governing how fast a synapse
-           depletes with repeated use ("boredom" on repetitive loops).
-        depression_recovery: per-ms recovery rate back toward full efficacy at rest.
-        """
         self.W = W.tocsr() if sp.issparse(W) else np.asarray(W)
         self.N = self.W.shape[0]
         self.tau_m = tau_m
@@ -164,19 +177,10 @@ class FlyAuditoryNetwork:
         self.depression_recovery = depression_recovery
 
     def run_simulation(self, input_currents_by_channel, input_indices_by_channel, dt=0.1):
-        """
-        input_currents_by_channel: dict {channel_name: ndarray[T]} -- e.g.
-            {'JON_AB': env_ab, 'JON_CE': env_ce} from audio_utils.wav_to_jon_current
-        input_indices_by_channel: dict {channel_name: list[int]} -- matrix
-            indices each channel's current should be injected into (e.g.
-            jon_ab_indices, jon_ce_indices from this module).
-
-        Returns spike_record: ndarray[T, N] boolean.
-        """
         num_steps = max((len(arr) for arr in input_currents_by_channel.values()), default=0)
         V = np.full((self.N,), self.v_reset)
-        refractory_timer = np.zeros(self.N)     # ms remaining before a neuron can fire again
-        synaptic_efficacy = np.ones(self.N)     # 1.0 = fresh; decays toward 0 with fatigue
+        refractory_timer = np.zeros(self.N)
+        synaptic_efficacy = np.ones(self.N)
         spike_record = []
 
         for t in range(num_steps):
@@ -188,7 +192,6 @@ class FlyAuditoryNetwork:
 
             not_refractory = refractory_timer <= 0
 
-            # Membrane potential update -- neurons in their refractory window don't integrate
             dV = (-(V - self.v_reset) + I_ext) / self.tau_m * dt
             V[not_refractory] += dV[not_refractory]
 
@@ -197,8 +200,6 @@ class FlyAuditoryNetwork:
             refractory_timer[spikes] = self.refractory_ms
             spike_record.append(spikes)
 
-            # Recurrent synaptic input, scaled by each neuron's current efficacy (fatigue),
-            # and signed by W so GABAergic/glutamatergic connections inhibit downstream cells.
             effective_spikes = spikes.astype(float) * synaptic_efficacy
             if sp.issparse(self.W):
                 synaptic_input = self.W.T.dot(effective_spikes)
@@ -206,9 +207,6 @@ class FlyAuditoryNetwork:
                 synaptic_input = np.dot(effective_spikes, self.W)
             V[not_refractory] += synaptic_input[not_refractory] * 2.0
 
-            # Synaptic depression: neurons that just fired deplete their output efficacy;
-            # everything slowly recovers toward full strength at rest ("boredom" recovers
-            # between repetitive stimuli, desensitizes during them).
             synaptic_efficacy[spikes] *= np.exp(-dt / self.tau_depression)
             synaptic_efficacy += (1.0 - synaptic_efficacy) * self.depression_recovery
             synaptic_efficacy = np.clip(synaptic_efficacy, 0.05, 1.0)
@@ -219,7 +217,6 @@ class FlyAuditoryNetwork:
 
     @staticmethod
     def region_firing_rate(spike_record, indices, dt=0.1):
-        """Mean per-neuron firing rate (Hz) across a downstream region over the run."""
         if len(indices) == 0 or spike_record.size == 0:
             return 0.0
         duration_s = spike_record.shape[0] * dt / 1000.0
