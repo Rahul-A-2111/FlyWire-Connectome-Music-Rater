@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+uploads/
+temp_eval_clip_*.wav
+*_temp_converted.wav
+.vscode/
+.DS_Store
