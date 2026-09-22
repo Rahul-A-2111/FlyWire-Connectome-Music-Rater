@@ -108,7 +108,7 @@ def compute_ipi_sync_index(wav_path, target_ipi_ms=35.0, tolerance_ms=5.0):
     Returns dict: {'ipi_sync_index': 0-1 float, 'mean_ipi_ms': float|None,
                     'num_pulses': int}
     """
-    y, sr = librosa.load(wav_path, sr=22050, mono=True)
+    y, sr = librosa.load(wav_path, sr=22050, mono=True, duration=30.0)
     envelope = np.abs(signal.hilbert(y))
 
     if len(envelope) > 101:
@@ -136,17 +136,9 @@ def compute_ipi_sync_index(wav_path, target_ipi_ms=35.0, tolerance_ms=5.0):
     }
 
 
-# ==========================================
-# 3. HARMONICITY-TO-NOISE RATIO (HNR)
-# ==========================================
 def compute_hnr(wav_path):
-    """
-    Clean musical harmonies phase-lock JON-A responses; chaotic noise or
-    harsh distortion degrades phase locking and biases the network toward
-    threat channels. Returns the harmonic-to-noise ratio in dB (higher =
-    cleaner/more harmonic).
-    """
-    y, sr = librosa.load(wav_path, sr=22050, mono=True)
+    # Load first 30 seconds only (prevents multi-minute HPSS separation)
+    y, sr = librosa.load(wav_path, sr=22050, mono=True, duration=30.0)
     y_harmonic, _ = librosa.effects.hpss(y)
 
     harmonic_energy = float(np.sum(y_harmonic ** 2))
@@ -158,20 +150,9 @@ def compute_hnr(wav_path):
     return float(10 * np.log10(harmonic_energy / noise_energy))
 
 
-# ==========================================
-# 4. DYNAMIC TEMPO ENTRAINMENT
-# ==========================================
 def compute_dynamic_tempo(wav_path, frame_length_s=4.0, hop_s=2.0):
-    """
-    Tracks tempo across overlapping windows instead of relying on a single
-    static BPM reading for the whole track, so smooth rhythmic transitions
-    can be rewarded and jarring tempo jumps can be penalized.
-
-    Returns dict: {'tempo_track': [(start_time_s, bpm), ...],
-                    'tempo_stability': 0-1 float (1.0 = perfectly steady),
-                    'duration_s': float}
-    """
-    y, sr = librosa.load(wav_path, sr=22050, mono=True)
+    # Load first 30 seconds only for sliding window tempo stability
+    y, sr = librosa.load(wav_path, sr=22050, mono=True, duration=30.0)
     duration_s = len(y) / sr
 
     frame_samples = int(frame_length_s * sr)
@@ -181,7 +162,7 @@ def compute_dynamic_tempo(wav_path, frame_length_s=4.0, hop_s=2.0):
     t = 0
     while t < len(y):
         chunk = y[t:t + frame_samples]
-        if len(chunk) < sr:  # too short a tail to estimate reliably
+        if len(chunk) < sr:
             break
         onset_env = librosa.onset.onset_strength(y=chunk, sr=sr)
         tempo = librosa.feature.tempo(onset_envelope=onset_env, sr=sr)

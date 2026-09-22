@@ -154,7 +154,7 @@ class FlyAuditoryNetwork:
            depletes with repeated use ("boredom" on repetitive loops).
         depression_recovery: per-ms recovery rate back toward full efficacy at rest.
         """
-        self.W = W.toarray() if sp.issparse(W) else np.asarray(W)
+        self.W = W.tocsr() if sp.issparse(W) else np.asarray(W)
         self.N = self.W.shape[0]
         self.tau_m = tau_m
         self.v_thresh = v_thresh
@@ -200,7 +200,10 @@ class FlyAuditoryNetwork:
             # Recurrent synaptic input, scaled by each neuron's current efficacy (fatigue),
             # and signed by W so GABAergic/glutamatergic connections inhibit downstream cells.
             effective_spikes = spikes.astype(float) * synaptic_efficacy
-            synaptic_input = np.dot(effective_spikes, self.W)
+            if sp.issparse(self.W):
+                synaptic_input = self.W.T.dot(effective_spikes)
+            else:
+                synaptic_input = np.dot(effective_spikes, self.W)
             V[not_refractory] += synaptic_input[not_refractory] * 2.0
 
             # Synaptic depression: neurons that just fired deplete their output efficacy;
