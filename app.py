@@ -12,6 +12,11 @@ CORS(app)
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# Fly behavioral state presets. Selected in the UI, passed through to the
+# judge engine so the connectome simulation can bias scoring accordingly.
+VALID_MODES = {'courtship', 'territorial', 'sleep'}
+DEFAULT_MODE = 'courtship'
+
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">
@@ -180,6 +185,24 @@ HTML_TEMPLATE = """
 </div>
 </div>
 
+<!-- FLY PERSONALITY / ENVIRONMENTAL MODE TOGGLE -->
+<div class="w-full max-w-2xl mt-3 relative z-30">
+  <div class="flex items-center justify-center gap-2 p-1.5 rounded-full bg-noir-900/90 border border-noir-700 shadow-lg" id="mode-toggle-group">
+    <button data-mode="courtship" class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[10px] tracking-wider uppercase transition-all bg-noir-gold text-noir-950 font-bold" type="button">
+      Courtship
+    </button>
+    <button data-mode="territorial" class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[10px] tracking-wider uppercase transition-all text-noir-aged hover:text-noir-creme" type="button">
+      Territorial
+    </button>
+    <button data-mode="sleep" class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[10px] tracking-wider uppercase transition-all text-noir-aged hover:text-noir-creme" type="button">
+      Quiet / Sleep
+    </button>
+  </div>
+  <p class="text-center font-mono text-[9px] text-noir-aged/70 mt-1 uppercase tracking-widest" id="mode-hint-text">
+    Default: prefers 120–160 BPM pulse tracks &amp; smooth 180 Hz sine hums
+  </p>
+</div>
+
 <!-- INPUT CONSOLE BAR -->
 <div class="w-full max-w-2xl mt-3 relative z-30">
   <div class="relative transition-all duration-500" id="chat-bar-container">
@@ -309,6 +332,28 @@ window.addEventListener('DOMContentLoaded', () => {
 
     let evalData = null;
     let toastTimer = null;
+    let selectedMode = 'courtship';
+
+    const modeButtons = document.querySelectorAll('.mode-btn');
+    const modeHintText = document.getElementById('mode-hint-text');
+    const MODE_HINTS = {
+        courtship: 'Default: prefers 120–160 BPM pulse tracks &amp; smooth 180 Hz sine hums',
+        territorial: 'Rewards aggressive, high-transient beats with fast tempo shifts',
+        sleep: 'Penalizes loud tracks heavily; rewards gentle ambient melodies'
+    };
+
+    modeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            selectedMode = btn.dataset.mode;
+            modeButtons.forEach(b => {
+                b.classList.remove('bg-noir-gold', 'text-noir-950', 'font-bold');
+                b.classList.add('text-noir-aged');
+            });
+            btn.classList.add('bg-noir-gold', 'text-noir-950', 'font-bold');
+            btn.classList.remove('text-noir-aged');
+            if (modeHintText) modeHintText.innerHTML = MODE_HINTS[selectedMode] || '';
+        });
+    });
 
     // FULL RESET TO INITIAL STATE
     function resetToPristine(showToast = true) {
@@ -369,12 +414,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData();
         formData.append('song', file);
+        formData.append('mode', selectedMode);
 
         try {
             const uploadRes = await fetch('/upload', { method: 'POST', body: formData });
             const uploadData = await uploadRes.json();
 
-            const eventSource = new EventSource(`/stream_judge/${uploadData.filename}`);
+            const eventSource = new EventSource(`/stream_judge/${uploadData.filename}?mode=${encodeURIComponent(selectedMode)}`);
             eventSource.onmessage = (event) => {
                 const data = JSON.parse(event.data);
 
@@ -484,6 +530,9 @@ def upload():
 @app.route('/stream_judge/<filename>')
 def stream_judge(filename):
     file_path = os.path.join(UPLOAD_FOLDER, filename)
+    mode = request.args.get('mode', DEFAULT_MODE)
+    if mode not in VALID_MODES:
+        mode = DEFAULT_MODE
 
     def generate():
         msg_queue = queue.Queue()
@@ -495,7 +544,10 @@ def stream_judge(filename):
 
         def run_eval():
             try:
-                res = evaluate_song_with_fly(file_path, progress_callback=callback)
+                # NOTE: judge_engine.evaluate_song_with_fly needs to accept a
+                # `mode` kwarg (courtship / territorial / sleep) and use it to
+                # bias scoring per the personality presets described in the UI.
+                res = evaluate_song_with_fly(file_path, progress_callback=callback, mode=mode)
                 result_holder['data'] = res
             except Exception as e:
                 result_holder['error'] = str(e)

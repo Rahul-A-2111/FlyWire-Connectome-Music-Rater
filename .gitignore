@@ -5,3 +5,6 @@ temp_eval_clip_*.wav
 *_temp_converted.wav
 .vscode/
 .DS_Store
+*.csv
+jon_synapses.csv
+neuron_annotations.csv
