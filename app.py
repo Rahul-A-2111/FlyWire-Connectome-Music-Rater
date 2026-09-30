@@ -465,15 +465,21 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <!-- SECTION: CONNECTOME HALL OF ACCLAIM / LEADERBOARD (COLLAPSIBLE / PERSISTENT) -->
 <section aria-hidden="true" class="hidden opacity-0 relative z-20 py-10 px-4 max-w-5xl mx-auto w-full border-t border-noir-800/80 mt-8 transition-all duration-500 ease-in-out" id="leaderboard-section">
   
-  <!-- Top Section Header & Close Pill -->
+  <!-- Top Section Header & Close / Rate Another Buttons -->
   <div class="flex items-center justify-between max-w-4xl mx-auto mb-3 px-2">
     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-noir-gold/40 bg-noir-900/90 text-noir-gold text-[10px] font-mono tracking-widest uppercase shadow">
       <span>✦ CONNECTOME AUDIT LEDGER OPEN</span>
     </div>
-    <button class="close-leaderboard-btn inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-noir-700 bg-noir-900/90 hover:border-noir-gold text-noir-aged hover:text-noir-gold text-xs font-mono tracking-wider transition-all cursor-pointer" type="button">
-      <span class="material-symbols-outlined text-sm">close</span>
-      <span>COLLAPSE LEDGER</span>
-    </button>
+    <div class="flex items-center gap-2">
+      <button class="btn-return-and-rate inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full border border-noir-gold bg-noir-900 text-noir-gold hover:bg-noir-gold hover:text-noir-950 text-xs font-mono tracking-wider transition-all shadow cursor-pointer font-bold" type="button">
+        <span>✦ RATE ANOTHER SONG</span>
+        <span class="material-symbols-outlined text-sm">arrow_upward</span>
+      </button>
+      <button class="close-leaderboard-btn inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-noir-700 bg-noir-900/90 hover:border-noir-gold text-noir-aged hover:text-noir-gold text-xs font-mono tracking-wider transition-all cursor-pointer" type="button">
+        <span class="material-symbols-outlined text-sm">close</span>
+        <span>COLLAPSE</span>
+      </button>
+    </div>
   </div>
 
   <!-- Section Title & Header Plaque -->
@@ -532,6 +538,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       <span class="text-noir-gold">✦ ARCHIVE CITATION:</span> Drosophila Acoustic Courtship Atlas, Vol. XIV, 1934. All entries certified by Lord Drosophila, Esq.
     </div>
     <div class="flex items-center gap-2.5">
+      <button class="btn-return-and-rate inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border-2 border-noir-gold bg-noir-900 text-noir-gold hover:bg-noir-gold hover:text-noir-950 font-cinzel text-xs tracking-wider font-bold transition-all shadow cursor-pointer" type="button">
+        <span>✦ RATE ANOTHER SONG ✦</span>
+      </button>
       <button class="close-leaderboard-btn inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-noir-gold/70 bg-noir-900/90 text-noir-gold hover:text-noir-creme hover:bg-noir-850 font-mono text-xs tracking-wider transition-all cursor-pointer" type="button">
         <span class="material-symbols-outlined text-sm">keyboard_arrow_up</span>
         <span>HIDE &amp; RETURN TO BOOTH</span>
@@ -1035,7 +1044,10 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    btnResetApp.addEventListener('click', () => resetToPristine(true));
+    btnResetApp.addEventListener('click', () => {
+      resetToPristine(true);
+      document.getElementById('stage-top').scrollIntoView({ behavior: 'smooth' });
+    });
 
     // START CONNECTOME SCAN PIPELINE VIA SSE
     function startConnectomeScan(filename, trackTitle, mode) {
@@ -1270,11 +1282,20 @@ window.addEventListener('DOMContentLoaded', () => {
       heroFrameContainer.classList.remove('scale-[1.03]', 'scale-[1.05]');
       setModeLock(false); // Re-enable mode toggle when reviewing ticket
 
+      // Unhide and restore console underneath so it is ready
+      unifiedConsolePane.classList.remove('hidden', 'opacity-0', 'scale-95');
+      loadingCard.classList.add('hidden');
+      setSourceMode(currentSourceMode);
+
       const btnViewLedger = document.getElementById('btn-view-ledger');
       if (btnViewLedger) {
         btnViewLedger.onclick = () => {
           metricsDashboard.classList.remove('translate-y-0');
           metricsDashboard.classList.add('translate-y-full');
+
+          // Reset stage to pristine so the user can immediately choose or upload new songs
+          resetToPristine(false);
+
           showLeaderboard();
           setTimeout(() => {
             const target = document.querySelector('.highlight-recent-item') || document.getElementById('leaderboard-section');
@@ -1858,6 +1879,10 @@ window.addEventListener('DOMContentLoaded', () => {
       leaderboardSection.classList.add('opacity-0');
       leaderboardSection.setAttribute('aria-hidden', 'true');
       updateToggleButtons(false);
+
+      // Always ensure upload & search console is pristine and ready
+      resetToPristine(false);
+
       if (scrollToTop) {
         document.getElementById('stage-top').scrollIntoView({ behavior: 'smooth' });
       }
@@ -1878,6 +1903,16 @@ window.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         hideLeaderboard(true);
+      });
+    });
+
+    // Rate Another Song buttons
+    document.querySelectorAll('.btn-return-and-rate').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        hideLeaderboard(true);
+        resetToPristine(false);
+        showToast("READY FOR NEXT AUDIT • DROP AUDIO FILE OR SEARCH");
       });
     });
 

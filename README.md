@@ -213,6 +213,7 @@ python -c "import caveclient; print(caveclient.__version__)"
 6. **Review Your Verdict & Leaderboard**:
    - After the video clip ends, your 5-gauge scorecard slides up.
    - Click `★ VIEW ON LEADERBOARD ➔` to see your track ranked and glowing in real time!
+   - Click `✦ RATE ANOTHER SONG ✦` anytime or click any archived entry to immediately audition another track.
 
 ---
 
