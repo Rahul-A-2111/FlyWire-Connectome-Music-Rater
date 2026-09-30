@@ -110,6 +110,125 @@ MODE_SCORERS = {
 }
 
 
+def get_verdict_for_score_and_mode(score, mode='courtship'):
+    mode = (mode or 'courtship').lower()
+    if mode not in ('courtship', 'territorial', 'sleep'):
+        mode = 'courtship'
+
+    score = float(score)
+
+    if mode == 'courtship':
+        if score >= 85.0:
+            return {
+                "rank_badge": "RANK S+ // TRUE ROMANTIC SYNC",
+                "verdict_title": "PASSIONATE WING-SONG ACCEPTED!",
+                "verdict_comment": "“By the heavens! Antennal micro-hairs vibrating in celestial harmony. P1 courtship command neurons fully saturated—I am extending a single wing and vibrating at 180 Hz with unbridled dipteran romance!”",
+                "category_tag": "EUPHORIC BUZZ"
+            }
+        elif score >= 70.0:
+            return {
+                "rank_badge": "RANK A // ENCHANTED FLUTTER",
+                "verdict_title": "A CAPTIVATING COURTSHIP CADENCE!",
+                "verdict_comment": "“A delightfully handsome serenade! Johnston's Organ detects genuine basilar rhythm and smooth frequency contours. A dignified abdominal waggle is granted with high compliments.”",
+                "category_tag": "ROMANTIC CADENCE"
+            }
+        elif score >= 50.0:
+            return {
+                "rank_badge": "RANK B // LUKEWARM HOVER",
+                "verdict_title": "AN AWKWARD SUITOR AT THE SALON",
+                "verdict_comment": "“Hmm. The rhythm is present, but the inter-pulse interval stumbles like a tipsy gentleman in a speakeasy. Lord Drosophila taps his tarsal claws politely, but keeps his wings decorously tucked.”",
+                "category_tag": "AWKWARD HOVER"
+            }
+        elif score >= 30.0:
+            return {
+                "rank_badge": "RANK C // DISCORDANT REJECTION",
+                "verdict_title": "COURTSHIP ADVANCES CURTLY SPURNED",
+                "verdict_comment": "“Preposterous courting technique! These erratic frequencies clash violently against the female receptivity window. My antennae ache with second-hand embarrassment. Step aside, amateur!”",
+                "category_tag": "COLD REJECTION"
+            }
+        else:
+            return {
+                "rank_badge": "RANK F // SWATTER DIVORCE",
+                "verdict_title": "THE FLY IS IN UTTER AGONY!",
+                "verdict_comment": "“An unmitigated assault upon Dipteran dignity! Screeching dissonance has induced acute courtship paralysis. I am frantically grooming my antennae in sheer horror. Bring the swatter and end this catastrophe!”",
+                "category_tag": "SWATTER DIVORCE"
+            }
+
+    elif mode == 'territorial':
+        if score >= 85.0:
+            return {
+                "rank_badge": "RANK S+ // WARPING GLADIATOR",
+                "verdict_title": "APEX WARRIOR THORAX SHOCK!",
+                "verdict_comment": "“Incredible pugilistic thunder! These brutal transient strikes and ferocious battle beats set my thoracic motor ablaze. Stand aside, trespassers—the rotting banana throne belongs unconditionally to me!”",
+                "category_tag": "WARRIOR GLORY"
+            }
+        elif score >= 70.0:
+            return {
+                "rank_badge": "RANK A // AGGRESSIVE SPAR",
+                "verdict_title": "AN INTIMIDATING PERCUSSIVE DISPLAY",
+                "verdict_comment": "“A potent display of sonic muscle! Rapid tempo pulses rattle through Johnston's organ like boxing gloves against canvas. Rival flies retreat across the perimeter in respectful terror.”",
+                "category_tag": "PERCUSSIVE FORCE"
+            }
+        elif score >= 50.0:
+            return {
+                "rank_badge": "RANK B // HESITANT POSTURING",
+                "verdict_title": "MILD SKIRMISH ON THE FRUIT PLATTER",
+                "verdict_comment": "“Adequate percussive posturing, yet lacking the vicious swagger required to rule the colony. A cautious standoff is maintained, but neither territory was won nor honor defended.”",
+                "category_tag": "STANDOFF"
+            }
+        elif score >= 30.0:
+            return {
+                "rank_badge": "RANK C // TERRITORY SURRENDERED",
+                "verdict_title": "FEEBLE MEEKNESS AT THE BORDER",
+                "verdict_comment": "“Limp, sluggish, and cowardly! These flaccid beats wouldn't scare away an aphid. You've been chased from the perimeter without the rival flies even bothering to raise their front legs.”",
+                "category_tag": "FEEBLE MEEKNESS"
+            }
+        else:
+            return {
+                "rank_badge": "RANK F // ROUTED RETREAT",
+                "verdict_title": "LC4 PANIC: FLEEING THE BATTLEFIELD!",
+                "verdict_comment": "“Catastrophic rout! This chaotic screech triggers violent Giant Fiber escape reflexes. My fight-or-flight circuits slammed 100% into frantic retreat. I am flying backward into a wall!”",
+                "category_tag": "TOTAL ROUT"
+            }
+
+    else:  # 'sleep'
+        if score >= 85.0:
+            return {
+                "rank_badge": "RANK S+ // VELVET LULLABY",
+                "verdict_title": "DIVINE CIRCADIAN SLUMBER ACHIEVED!",
+                "verdict_comment": "“Sublime, velvety tranquility... Antennal mechanoreceptors float in warm sub-harmonic stillness with zero abrasive transients. Lord Drosophila tucks his wings, curls his tarsal claws, and sleeps like a king.”",
+                "category_tag": "DREAMLAND SLUMBER"
+            }
+        elif score >= 70.0:
+            return {
+                "rank_badge": "RANK A // RESTFUL DROWSE",
+                "verdict_title": "SOOTHING DUSK SERENITY",
+                "verdict_comment": "“A very peaceful, gentle nocturnal hum. The acoustic blanket is soft and comforting, though a faint treble rustle keeps one tiny ommatidium half-open. Pleasant dreams, connoisseur.”",
+                "category_tag": "RESTFUL DROWSE"
+            }
+        elif score >= 50.0:
+            return {
+                "rank_badge": "RANK B // FITFUL TWITCHING",
+                "verdict_title": "RESTLESS TWILIGHT IN THE DORMITORY",
+                "verdict_comment": "“A fitful twilight drowse. The baseline volume is endurable, but random dynamic bumps keep nudging the AMMC threshold. Lord Drosophila mutters in his sleep and turns over testily.”",
+                "category_tag": "FITFUL DROWSE"
+            }
+        elif score >= 30.0:
+            return {
+                "rank_badge": "RANK C // AGITATED INSOMNIA",
+                "verdict_title": "CIRCADIAN RHYTHM SEVERELY ASSAULTED",
+                "verdict_comment": "“Good grief, shut it down! Unwelcome clatter and intrusive spikes pierce right through my sleep chamber. My circadian clock is reeling and I demand complete silence from the salon!”",
+                "category_tag": "AGITATED INSOMNIA"
+            }
+        else:
+            return {
+                "rank_badge": "RANK F // NIGHTMARE SIREN",
+                "verdict_title": "VIOLENT MIDNIGHT ALARM: SWATTER PANIC!",
+                "verdict_comment": "“HORROR IN THE NIGHT! A blaring, screeching racket that shatters every sleeping neuron in my cerebrum! I was launched out of my hammock in terror. Cease this ungodly nightmare instantly!”",
+                "category_tag": "NIGHTMARE SIREN"
+            }
+
+
 def evaluate_song_with_fly(file_path, progress_callback=None, mode=DEFAULT_MODE):
     if mode not in MODE_PRESETS:
         mode = DEFAULT_MODE
@@ -124,13 +243,19 @@ def evaluate_song_with_fly(file_path, progress_callback=None, mode=DEFAULT_MODE)
     clean_wav_path = file_path.rsplit('.', 1)[0] + "_temp_converted.wav"
     try:
         notify({"stage": "🎵 Normalizing audio stream to 16 kHz Mono WAV..."})
-        y, sr = librosa.load(
-            file_path,
-            sr=16000,
-            mono=True,
-            duration=ANALYSIS_DURATION_SECONDS,
-        )
-        sf.write(clean_wav_path, y, sr, subtype='PCM_16')
+        try:
+            y, sr = librosa.load(
+                file_path,
+                sr=16000,
+                mono=True,
+                duration=ANALYSIS_DURATION_SECONDS,
+            )
+            sf.write(clean_wav_path, y, sr, subtype='PCM_16')
+        except Exception:
+            # Fallback to ffmpeg for m4a, mp3, aac, flac, etc.
+            import subprocess
+            cmd = ['ffmpeg', '-y', '-i', file_path, '-t', str(ANALYSIS_DURATION_SECONDS), '-ar', '16000', '-ac', '1', clean_wav_path]
+            subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except Exception as e:
         print(f"[ERROR] Audio conversion failed: {e}", flush=True)
         return {
@@ -298,6 +423,7 @@ def evaluate_song_with_fly(file_path, progress_callback=None, mode=DEFAULT_MODE)
 
         THRESHOLD = 65.0
         is_good = overall_score >= THRESHOLD
+        verdict = get_verdict_for_score_and_mode(overall_score, mode)
 
         return {
             "result": "GOOD" if is_good else "BAD",
@@ -313,6 +439,10 @@ def evaluate_song_with_fly(file_path, progress_callback=None, mode=DEFAULT_MODE)
             "ipi_sync_index": round(ipi_info.get('ipi_sync_index', 0.0), 2),
             "hnr_db": round(hnr_db, 1),
             "tempo_stability": round(tempo_info.get('tempo_stability', 1.0), 2),
+            "rank_badge": verdict["rank_badge"],
+            "verdict_title": verdict["verdict_title"],
+            "verdict_comment": verdict["verdict_comment"],
+            "category_tag": verdict["category_tag"],
         }
 
     finally:
