@@ -8,16 +8,21 @@ The application evaluates songs through simulated Johnston's Organ mechanorecept
 
 ## Key Features
 
-- **Connectome Hall of Acclaim (Leaderboard System)**:
-  - Persistent server-backed leaderboard (`leaderboard.json`) tracking audited tracks.
+- **Connectome Hall of Acclaim (Real-Time Leaderboard System)**:
+  - Persistent server-backed leaderboard (`leaderboard.json`) tracking audited specimens.
+  - **Instant Real-Time Sync**: Audited tracks are immediately logged in memory and synced to the backend without requiring a page refresh.
+  - **Visual Audit Highlights**: Newly audited tracks are styled with a shimmering gold border and an animated `★ JUST AUDITED` badge.
+  - **Live Dispatch Feed**: An automatic synapse feed banner (`⚡ LIVE AUDIT LOG // REAL-TIME DISPATCH`) dynamically displays the latest audited tracks across categories.
   - Category filtration tabs:
-    - `All Categories`: Comprehensive chronological audit register.
-    - `★ All-Time Affinity`: High-scoring auditory masterpieces ($\ge 80$).
+    - `All Categories`: Comprehensive chronological audit register with live dispatch.
+    - `★ All-Time Affinity`: High-scoring auditory masterpieces ($\ge 75$).
     - `♫ Courtship Harmonics`: Songs evaluated under Courtship mode.
     - `⚡ Johnston's Vibration`: Songs evaluated under Territorial mode.
-    - `⚠ Dreadful Swatter Triggers`: Low-scoring or chaotic din inducing LC4 escape panic.
-  - Automatically logs every local or online audit with score, rank badge, and critic verdict.
-  - Interactive entries: Click any ledger item to load and audit it in the screening booth.
+    - `☾ Nocturnal Slumber`: Songs evaluated under Quiet / Sleep mode.
+    - `⚠ Dreadful Swatter Triggers`: Low-scoring or chaotic din inducing LC4 escape panic ($< 55$).
+    - `🕒 Recent Audits`: Quick chronological filter for the latest specimens.
+  - Interactive entries: Click any ledger item to instantly queue and re-audit it in the screening booth.
+  - Direct ledger shortcut: A dedicated `★ VIEW ON LEADERBOARD ➔` button on the final scorecard smoothly scrolls down to inspect your track's ledger entry.
 
 - **Online Song Lookup & Instant Preview Auditing**:
   - Global music archive search powered by the public iTunes Search API.
@@ -40,8 +45,12 @@ The application evaluates songs through simulated Johnston's Organ mechanorecept
 - **Mode Locking During Bio-Scan**:
   - Behavioral mode selection is automatically locked and disabled during audio evaluation with a visual warning badge to prevent state corruption during active neural simulation.
 
-- **1930s Film Screening Experience**:
-  - Film grain vignette, projector flicker, rubber hose animations, and custom synchronized MP4 reaction videos (`fly_good.mp4` / `fly_bad.mp4`) with animated silent reel fallbacks.
+- **1930s Film Screening Experience & Video Synchronization**:
+  - Authentic 1930s film grain vignette, projector flicker, and rubber hose bobbing animations.
+  - **Front-and-Center Video Playback**: Clicking **SEE RESULTS** dismisses the preliminary popup and centers the film viewport into direct sight.
+  - **Full Reel Theatrical Timing**: The custom MP4 reaction cartoon (`fly_good.mp4` / `fly_bad.mp4`) plays in its entirety. The comprehensive 5-gauge scorecard **only slides up after the video clip ends**, preserving the comedic punchline.
+  - **Scrubber & Skip Control**: Features an optical soundtrack progress bar, live timecode, and a `SKIP TO REPORT ➔` button for immediate report access when desired.
+  - Fallback animated silent reel with projector flicker if MP4 decoding is unsupported in the client browser.
 
 ---
 
@@ -98,5 +107,6 @@ python app.py
 Open the local server URL (e.g. `http://localhost:5000`):
 1. Choose a behavioral mode: **Courtship**, **Territorial**, or **Quiet / Sleep**.
 2. Select your audio via **Local File Upload** (`.mp3`, `.wav`, `.m4a`), **Online Song Search**, or **Quick Demos**.
-3. Watch the real-time connectome mechanoreceptor scan and click **SEE RESULTS** to enter the screening room.
-4. Review your 5-gauge neural scorecard and check your track's ranking in the **Connectome Hall of Acclaim**.
+3. Watch the real-time connectome mechanoreceptor scan and click **SEE RESULTS** to enter the screening booth.
+4. Watch the full synchronized 1930s reaction cartoon (`fly_good.mp4` / `fly_bad.mp4`), after which your 5-gauge neural scorecard automatically slides up (or click `SKIP TO REPORT ➔`).
+5. Review your critic commentary and click `★ VIEW ON LEADERBOARD ➔` to see your track instantly registered and highlighted in real-time in the **Connectome Hall of Acclaim**.

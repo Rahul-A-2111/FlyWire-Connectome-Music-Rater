@@ -269,11 +269,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
         <!-- STATE 4: MP4 & Animated Reel Reaction Viewport -->
         <div class="absolute inset-0 opacity-0 pointer-events-none transition-all duration-500 flex flex-col items-center justify-center bg-noir-950 z-20" id="view-video-player">
-          <video class="w-full h-full object-cover hidden" id="flyVideo" muted playsinline>
-            <source id="videoSource" src="" type="video/mp4"/>
-          </video>
+          <video class="w-full h-full object-cover hidden" id="flyVideo" playsinline></video>
           <!-- Animated Silent Film Fallback Image -->
-          <img alt="Silent Movie Reaction" class="w-full h-full object-cover animate-projector sepia-[0.35] contrast-125 brightness-95" id="reaction-film-img" src="https://lh3.googleusercontent.com/aida/AEtjO1VmzVI8W5pIp7k_a9fZvL99_uu8llsB7zOf7hsF5t4eqGLoXpil_pqkcfLaraUkHDirQ25PwzYDdzElffAONEUe_6vEnE2b3TZVqKzPs-wmEkbYfCumd9RaF5jR7V5MQ2jm0UjtAcEzCIsDLzP4Y5ZeIs8VShdupqp7hutJsI8RdZwBkkeoGcb_jWGlaUa3Pue-YhuHf6f1vrMFvL0QWNLYcHBQpQ_bnjBCKQt-F6X6eEOILWHRmQezEjQ"/>
+          <img alt="Silent Movie Reaction" class="w-full h-full object-cover animate-projector sepia-[0.35] contrast-125 brightness-95 hidden" id="reaction-film-img" src="https://lh3.googleusercontent.com/aida/AEtjO1VmzVI8W5pIp7k_a9fZvL99_uu8llsB7zOf7hsF5t4eqGLoXpil_pqkcfLaraUkHDirQ25PwzYDdzElffAONEUe_6vEnE2b3TZVqKzPs-wmEkbYfCumd9RaF5jR7V5MQ2jm0UjtAcEzCIsDLzP4Y5ZeIs8VShdupqp7hutJsI8RdZwBkkeoGcb_jWGlaUa3Pue-YhuHf6f1vrMFvL0QWNLYcHBQpQ_bnjBCKQt-F6X6eEOILWHRmQezEjQ"/>
           
           <!-- Silent movie top ribbon -->
           <div class="absolute top-2.5 left-3.5 right-3.5 flex items-center justify-between z-10 pointer-events-none">
@@ -281,8 +279,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
               <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
               <span id="film-live-tag">OPTICAL REEL ROLLING</span>
             </div>
-            <div class="font-mono text-xs text-noir-creme bg-noir-900/90 px-3 py-1 rounded border border-noir-700" id="film-timer">
-              00:00 / 00:03
+            <div class="flex items-center gap-2">
+              <button id="btn-skip-video" class="pointer-events-auto px-2.5 py-0.5 rounded-full bg-noir-900/90 border border-noir-gold/80 text-noir-gold hover:text-noir-creme text-[10px] font-mono tracking-wider transition-all shadow hover:bg-noir-850 cursor-pointer" type="button">
+                SKIP TO REPORT ➔
+              </button>
+              <div class="font-mono text-xs text-noir-creme bg-noir-900/90 px-2.5 py-0.5 rounded border border-noir-700" id="film-timer">
+                00:00 / 00:10
+              </div>
             </div>
           </div>
           <!-- Optical soundtrack scrubber simulation -->
@@ -500,19 +503,25 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     <!-- Category Tabs Filter -->
     <div class="flex flex-wrap items-center justify-center gap-2 max-w-4xl mx-auto mt-2" id="leaderboard-tabs" role="tablist">
-      <button class="px-3.5 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-gold bg-noir-gold text-noir-950 font-bold shadow active-tab-btn" data-category="all" type="button">
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-gold bg-noir-gold text-noir-950 font-bold shadow active-tab-btn" data-category="all" type="button">
         All Categories
       </button>
-      <button class="px-3.5 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="affinity" type="button">
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="recent" type="button">
+        ⚡ Live / Recent Audits
+      </button>
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="affinity" type="button">
         ★ All-Time Affinity
       </button>
-      <button class="px-3.5 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="courtship" type="button">
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="courtship" type="button">
         ♫ Courtship Harmonics
       </button>
-      <button class="px-3.5 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="organ" type="button">
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="organ" type="button">
         ⚡ Johnston's Vibration
       </button>
-      <button class="px-3.5 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-rose-900/60 bg-noir-900/80 text-rose-300 hover:text-rose-100 hover:border-rose-500" data-category="swatter" type="button">
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="sleep" type="button">
+        ☾ Nocturnal Slumber
+      </button>
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-rose-900/60 bg-noir-900/80 text-rose-300 hover:text-rose-100 hover:border-rose-500" data-category="swatter" type="button">
         ⚠ Dreadful Swatter Triggers
       </button>
     </div>
@@ -628,9 +637,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     </div>
 
     <!-- RE-EVALUATION PROMINENT ACTION -->
-    <div class="text-center pt-2">
-      <button class="px-8 py-3.5 rounded-xl font-cinzel text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-850 via-noir-800 to-noir-850 text-noir-gold border-2 border-noir-gold hover:bg-noir-gold hover:text-noir-950 transition-all duration-300 shadow-[0_0_25px_rgba(212,175,55,0.3)] hover:shadow-[0_0_35px_rgba(212,175,55,0.7)] cursor-pointer" id="btn-reset-app" type="button">
+    <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+      <button class="px-6 sm:px-8 py-3.5 rounded-xl font-cinzel text-xs sm:text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-850 via-noir-800 to-noir-850 text-noir-gold border-2 border-noir-gold hover:bg-noir-gold hover:text-noir-950 transition-all duration-300 shadow-[0_0_25px_rgba(212,175,55,0.3)] hover:shadow-[0_0_35px_rgba(212,175,55,0.7)] cursor-pointer" id="btn-reset-app" type="button">
         ✦ CHOOSE NEW SONG FOR RATING ✦
+      </button>
+      <button class="px-6 sm:px-8 py-3.5 rounded-xl font-cinzel text-xs sm:text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-900 via-noir-850 to-noir-900 text-amber-300 border-2 border-amber-400/80 hover:border-amber-300 hover:text-noir-950 hover:bg-amber-300 transition-all duration-300 shadow-[0_0_20px_rgba(245,158,11,0.3)] cursor-pointer" id="btn-view-ledger" type="button">
+        ★ VIEW ON LEADERBOARD ➔
       </button>
     </div>
   </div>
@@ -969,7 +981,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
       // Restore idle hero picture
       heroFlyImg.src = IMG_HERO_IDLE;
-      viewHeroImage.classList.remove('opacity-0');
+      viewHeroImage.classList.remove('opacity-0', 'hidden');
       viewHeroImage.classList.add('opacity-100');
       heroAuditStatus.textContent = "AUDIT STATE: IDLE / WAITING FOR TUNE";
 
@@ -1054,7 +1066,7 @@ window.addEventListener('DOMContentLoaded', () => {
               setTimeout(() => {
                 loadingCard.classList.add('hidden');
                 // Show reveal popup modal
-                revealPopup.classList.remove('pointer-events-none', 'opacity-0', 'scale-90');
+                revealPopup.classList.remove('pointer-events-none', 'opacity-0', 'scale-90', 'hidden');
                 revealPopup.classList.add('opacity-100', 'scale-100');
               }, 300);
             }, 400);
@@ -1083,20 +1095,26 @@ window.addEventListener('DOMContentLoaded', () => {
             };
             recordAuditToLeaderboard(evalData);
             loadingCard.classList.add('hidden');
-            revealPopup.classList.remove('pointer-events-none', 'opacity-0', 'scale-90');
+            revealPopup.classList.remove('pointer-events-none', 'opacity-0', 'scale-90', 'hidden');
             revealPopup.classList.add('opacity-100', 'scale-100');
           }, 600);
         }
       };
     }
 
-    // CLICK "SEE RESULTS" -> PLAY FILM / MP4 -> SLIDE UP SCORECARD
+    // CLICK "SEE RESULTS" -> PLAY FILM / MP4 -> ONLY SLIDE UP SCORECARD AFTER VIDEO ENDS
     btnSeeResults.addEventListener('click', () => {
-      revealPopup.classList.add('opacity-0', 'scale-90', 'pointer-events-none');
-      heroFrameContainer.classList.add('scale-[1.05]', 'film-flash');
+      // 1. Completely dismiss reveal popup modal
+      revealPopup.classList.add('opacity-0', 'scale-90', 'pointer-events-none', 'hidden');
+      revealPopup.classList.remove('opacity-100', 'scale-100');
 
-      viewHeroImage.classList.add('opacity-0');
+      // 2. Hide idle hero image completely
+      viewHeroImage.classList.add('opacity-0', 'hidden');
       viewHeroImage.classList.remove('opacity-100');
+
+      // 3. Smoothly center the film frame container into user's direct line of sight
+      heroFrameContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      heroFrameContainer.classList.add('scale-[1.03]', 'film-flash');
 
       const isGood = (evalData && evalData.result === 'GOOD') || (evalData && evalData.score >= 65);
       const verdict = resolveVerdict(evalData ? evalData.score : 75, selectedMode);
@@ -1113,48 +1131,94 @@ window.addEventListener('DOMContentLoaded', () => {
         videoStatusText.textContent = "✦ CHAOTIC DIN // SWATTER ESCAPE CIRCUIT ARMED";
       }
 
-      viewVideoPlayer.classList.remove('pointer-events-none', 'opacity-0');
+      // 4. Reveal video player container
+      viewVideoPlayer.classList.remove('pointer-events-none', 'opacity-0', 'hidden');
       viewVideoPlayer.classList.add('opacity-100');
 
-      // Try playing MP4 if available
-      let videoPlayed = false;
-      if (flyVideo && videoSource) {
-        videoSource.src = isGood ? "/static/fly_good.mp4" : "/static/fly_bad.mp4";
-        flyVideo.load();
-        const playPromise = flyVideo.play();
-        if (playPromise !== undefined) {
-          playPromise.then(() => {
-            videoPlayed = true;
-            flyVideo.classList.remove('hidden');
-            reactionFilmImg.classList.add('hidden');
-          }).catch(() => {
-            videoPlayed = false;
-            flyVideo.classList.add('hidden');
-            reactionFilmImg.classList.remove('hidden');
-          });
-        }
-      }
+      // 5. Setup and play MP4 video
+      const videoSrc = isGood ? "/static/fly_good.mp4" : "/static/fly_bad.mp4";
+      flyVideo.src = videoSrc;
+      flyVideo.classList.remove('hidden');
+      reactionFilmImg.classList.add('hidden');
+      flyVideo.currentTime = 0;
+      flyVideo.muted = false; // User clicked a button, so unmuted audio is allowed
 
-      // Optical soundtrack scrubber (3.0 seconds reel)
-      let duration = 3.0;
-      let elapsed = 0;
       videoProgressBar.style.width = '0%';
+      filmTimer.textContent = '00:00 / 00:10';
 
-      if (filmVideoInterval) clearInterval(filmVideoInterval);
-      filmVideoInterval = setInterval(() => {
-        elapsed += 0.1;
-        const pct = Math.min((elapsed / duration) * 100, 100);
-        videoProgressBar.style.width = `${pct}%`;
-        filmTimer.textContent = `00:0${Math.floor(elapsed)} / 00:03`;
-
-        if (elapsed >= duration) {
+      let videoEndedTriggered = false;
+      function handleVideoClipEnd() {
+        if (videoEndedTriggered) return;
+        videoEndedTriggered = true;
+        if (filmVideoInterval) {
           clearInterval(filmVideoInterval);
           filmVideoInterval = null;
-          setTimeout(() => {
-            triggerMetricsSlideUp();
-          }, 250);
         }
-      }, 100);
+        videoProgressBar.style.width = '100%';
+        console.log("Video clip ended! Displaying actual result report now.");
+        // Small cinematic pause after video ends before slide-up
+        setTimeout(() => {
+          triggerMetricsSlideUp();
+        }, 400);
+      }
+
+      flyVideo.onloadedmetadata = () => {
+        const dur = flyVideo.duration || (isGood ? 10.0 : 15.0);
+        filmTimer.textContent = `00:00 / 00:${Math.floor(dur).toString().padStart(2, '0')}`;
+      };
+
+      flyVideo.ontimeupdate = () => {
+        const cur = flyVideo.currentTime || 0;
+        const dur = flyVideo.duration || (isGood ? 10.0 : 15.0);
+        const pct = Math.min((cur / dur) * 100, 100);
+        videoProgressBar.style.width = `${pct}%`;
+        const curSec = Math.floor(cur).toString().padStart(2, '0');
+        const durSec = Math.floor(dur).toString().padStart(2, '0');
+        filmTimer.textContent = `00:${curSec} / 00:${durSec}`;
+      };
+
+      // CRITICAL: Report ONLY appears after video clip ends!
+      flyVideo.onended = handleVideoClipEnd;
+
+      // Skip button allows user to jump directly to report if they don't want to wait
+      const btnSkipVideo = document.getElementById('btn-skip-video');
+      if (btnSkipVideo) {
+        btnSkipVideo.onclick = (e) => {
+          e.stopPropagation();
+          flyVideo.pause();
+          handleVideoClipEnd();
+        };
+      }
+
+      // Play the video
+      const playPromise = flyVideo.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(err => {
+          console.warn("Unmuted play blocked by browser policy, trying muted", err);
+          flyVideo.muted = true;
+          flyVideo.play().catch(e => {
+            console.warn("Video playback completely failed, falling back to animated reel", e);
+            flyVideo.classList.add('hidden');
+            reactionFilmImg.classList.remove('hidden');
+
+            // Fallback duration timer ONLY if MP4 video cannot play at all
+            let fallbackDur = isGood ? 8.0 : 10.0;
+            let elapsed = 0;
+            if (filmVideoInterval) clearInterval(filmVideoInterval);
+            filmVideoInterval = setInterval(() => {
+              elapsed += 0.2;
+              const pct = Math.min((elapsed / fallbackDur) * 100, 100);
+              videoProgressBar.style.width = `${pct}%`;
+              filmTimer.textContent = `00:0${Math.floor(elapsed)} / 00:${Math.floor(fallbackDur)}`;
+              if (elapsed >= fallbackDur) {
+                clearInterval(filmVideoInterval);
+                filmVideoInterval = null;
+                handleVideoClipEnd();
+              }
+            }, 200);
+          });
+        });
+      }
     });
 
     // SLIDE UP METRICS SCORECARD
@@ -1162,8 +1226,21 @@ window.addEventListener('DOMContentLoaded', () => {
       populateScorecard(evalData, currentTrackTitle, selectedMode);
       metricsDashboard.classList.remove('translate-y-full');
       metricsDashboard.classList.add('translate-y-0');
-      heroFrameContainer.classList.remove('scale-[1.05]');
+      heroFrameContainer.classList.remove('scale-[1.03]', 'scale-[1.05]');
       setModeLock(false); // Re-enable mode toggle when reviewing ticket
+
+      const btnViewLedger = document.getElementById('btn-view-ledger');
+      if (btnViewLedger) {
+        btnViewLedger.onclick = () => {
+          metricsDashboard.classList.remove('translate-y-0');
+          metricsDashboard.classList.add('translate-y-full');
+          showLeaderboard();
+          setTimeout(() => {
+            const target = document.querySelector('.highlight-recent-item') || document.getElementById('leaderboard-section');
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 250);
+        };
+      }
     }
 
     function populateScorecard(data, trackTitle, mode) {
@@ -1448,33 +1525,53 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    let currentCategoryFilter = 'all';
+
     async function recordAuditToLeaderboard(data) {
       if (!data) return;
       const score = Number(data.score) || 70.0;
       const mode = data.mode || selectedMode;
       const title = data.title || currentTrackTitle || 'Audio Specimen';
       const verdict = resolveVerdict(score, mode);
+      const isGood = score >= 65.0;
 
-      const payload = {
+      const cat = score < 50 ? 'swatter' : (mode === 'sleep' ? 'sleep' : (mode === 'territorial' ? 'organ' : (score >= 80 ? 'affinity' : 'courtship')));
+
+      const newEntry = {
+        id: "live-" + Date.now(),
         title: title,
         artist: title.includes('—') ? title.split('—')[0].trim() : (title.includes('-') ? title.split('-')[0].trim() : 'Audited Specimen'),
         mode: mode,
-        score: score,
+        category: cat,
+        score: Number(score.toFixed(1)),
         rank_badge: data.rank_badge || verdict.badge,
         verdict: data.verdict_title || verdict.title,
-        details: `${mode.toUpperCase()} Mode • ${score >= 65 ? 'Mechanoreceptor Lock' : 'Giant Fiber Alert'}`
+        details: `${mode.toUpperCase()} Mode • ${score.toFixed(1)}/100 • ${data.rank_badge || verdict.badge}`,
+        date: "Just Now",
+        type: isGood ? "good" : "bad",
+        isRecent: true
       };
 
+      // 1. Instant Optimistic Real-Time UI update!
+      currentLeaderboard = [newEntry, ...currentLeaderboard.filter(e => e.title !== title)];
+      renderLeaderboard(currentCategoryFilter);
+      showToast(`★ AUDIT LOGGED: "${title}" (${score.toFixed(1)}/100)`);
+
+      // 2. Persist to server backend
       try {
         const res = await fetch('/api/leaderboard', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(newEntry)
         });
         const json = await res.json();
         if (json.leaderboard) {
           currentLeaderboard = json.leaderboard;
-          renderLeaderboard(document.querySelector('#leaderboard-tabs button.active-tab-btn')?.getAttribute('data-category') || 'all');
+          // preserve isRecent tag on the newly added item
+          currentLeaderboard.forEach(item => {
+            if (item.title === title) item.isRecent = true;
+          });
+          renderLeaderboard(currentCategoryFilter);
         }
       } catch (err) {
         console.warn("Leaderboard save error", err);
@@ -1482,39 +1579,89 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderLeaderboard(filterCategory = 'all') {
+      currentCategoryFilter = filterCategory;
       if (!leaderboardCardsContainer) return;
 
       const categories = [
         { id: 'affinity', name: 'ALL-TIME CONNECTOME AFFINITY', icon: '★', sub: 'Highest Cumulative Synaptic Rating', border: 'border-noir-gold/60', glow: 'bg-noir-gold/10', color: 'text-noir-gold' },
         { id: 'courtship', name: 'COURTSHIP PULSE HARMONICS', icon: '♫', sub: 'Peak Male Wing-Extension Rhythm (~120–165 Hz)', border: 'border-noir-gold/60', glow: 'bg-amber-500/10', color: 'text-amber-400' },
         { id: 'organ', name: "JOHNSTON'S ORGAN VIBRATION", icon: '⚡', sub: 'Basilar Antennal Mechanosensory Resonance', border: 'border-noir-gold/60', glow: 'bg-primary/10', color: 'text-primary' },
+        { id: 'sleep', name: "NOCTURNAL SLUMBER (SLEEP MODE)", icon: '☾', sub: 'Sub-Harmonic Circadian Resting Equilibrium', border: 'border-indigo-500/60', glow: 'bg-indigo-500/10', color: 'text-indigo-300' },
         { id: 'swatter', name: 'MOST DREADFUL SWATTER TRIGGERS', icon: '⚠', sub: 'Extreme Panic • Instant Flight/Escape Reflex', border: 'border-rose-900/80', glow: 'bg-rose-700/10', color: 'text-rose-400' }
       ];
 
+      // Recent Audits
+      const recentAudits = currentLeaderboard.filter(item => item.isRecent || item.date === 'Just Now' || item.date === 'Recent Audit');
+
+      if (filterCategory === 'recent') {
+        const itemsToDisplay = recentAudits.length > 0 ? recentAudits : currentLeaderboard.slice(0, 6);
+        leaderboardCardsContainer.innerHTML = `
+          <div class="col-span-1 md:col-span-2 p-5 rounded-2xl bg-gradient-to-b from-noir-900 via-noir-850 to-noir-950 border-2 border-noir-gold shadow-2xl relative overflow-hidden">
+            <div class="flex items-center justify-between border-b border-noir-700/60 pb-3 mb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-noir-gold animate-ping"></span>
+                <h3 class="font-cinzel text-sm sm:text-base font-bold text-noir-creme">⚡ LIVE AUDIT LOG // REAL-TIME DISPATCH</h3>
+              </div>
+              <span class="font-mono text-[10px] text-noir-gold bg-noir-950 px-2 py-0.5 rounded border border-noir-gold/60">REAL-TIME</span>
+            </div>
+            <div class="space-y-2">
+              ${itemsToDisplay.map((item, idx) => renderSongItem(item, idx, 'text-noir-gold', true)).join('')}
+            </div>
+          </div>
+        `;
+        attachSongItemClickHandlers();
+        return;
+      }
+
+      // If all or specific category
+      let cardsHtml = '';
+
+      // If viewing all and there are recent audits, display the live audit strip!
+      if (filterCategory === 'all' && recentAudits.length > 0) {
+        cardsHtml += `
+          <div class="col-span-1 md:col-span-2 p-4 rounded-2xl bg-gradient-to-r from-noir-900 via-noir-850 to-noir-900 border-2 border-noir-gold/80 shadow-[0_0_20px_rgba(212,175,55,0.25)] relative overflow-hidden">
+            <div class="flex items-center justify-between border-b border-noir-700/60 pb-2 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                <span class="font-cinzel text-xs font-bold text-amber-300">LATEST REAL-TIME AUDITS</span>
+              </div>
+              <span class="font-mono text-[9px] text-noir-gold uppercase">AUTOMATIC SYNAPSE FEED</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              ${recentAudits.slice(0, 4).map((item, idx) => renderSongItem(item, idx, 'text-amber-300', true)).join('')}
+            </div>
+          </div>
+        `;
+      }
+
       const visibleCategories = categories.filter(c => filterCategory === 'all' || c.id === filterCategory);
 
-      leaderboardCardsContainer.innerHTML = visibleCategories.map(cat => {
+      cardsHtml += visibleCategories.map(cat => {
         let catItems = currentLeaderboard.filter(item => {
-          if (cat.id === 'affinity') return item.score >= 80;
-          if (cat.id === 'courtship') return item.mode === 'courtship' && item.score >= 50;
-          if (cat.id === 'organ') return (item.mode === 'territorial' || item.category === 'organ') && item.score >= 50;
-          if (cat.id === 'swatter') return item.score < 50 || item.category === 'swatter' || item.type === 'bad';
+          if (cat.id === 'affinity') return item.score >= 75;
+          if (cat.id === 'courtship') return item.mode === 'courtship';
+          if (cat.id === 'organ') return item.mode === 'territorial' || item.category === 'organ';
+          if (cat.id === 'sleep') return item.mode === 'sleep' || item.category === 'sleep';
+          if (cat.id === 'swatter') return item.score < 55 || item.category === 'swatter' || item.type === 'bad';
           return false;
         });
 
-        // Fallback items if none found
+        // Fallback items if empty
         if (catItems.length === 0) {
           catItems = currentLeaderboard.filter(i => i.category === cat.id);
         }
 
-        // Sort items by score descending (except swatter where low score is top hazard)
+        // Sort items by score (descending, except swatter which sorts ascending)
         if (cat.id === 'swatter') {
           catItems.sort((a, b) => a.score - b.score);
         } else {
           catItems.sort((a, b) => b.score - a.score);
         }
 
-        const topItems = catItems.slice(0, 4);
+        // If any recent audit belongs to this category, ensure it appears at top!
+        const recentsInCat = catItems.filter(i => i.isRecent);
+        const nonRecentsInCat = catItems.filter(i => !i.isRecent);
+        const displayItems = [...recentsInCat, ...nonRecentsInCat].slice(0, 6);
 
         return `
           <div class="category-card p-4 sm:p-5 rounded-2xl bg-gradient-to-b from-noir-900/90 to-noir-950/95 border-2 ${cat.border} shadow-[0_15px_35px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col justify-between" data-cat="${cat.id}">
@@ -1532,23 +1679,7 @@ window.addEventListener('DOMContentLoaded', () => {
               </div>
 
               <div class="space-y-2">
-                ${topItems.map((item, idx) => `
-                  <div class="song-item group flex items-center justify-between p-2 rounded-lg bg-noir-950/80 border border-noir-700/70 hover:border-noir-gold transition-all cursor-pointer" data-song="${item.title}" data-mode="${item.mode || 'courtship'}" data-score="${item.score}">
-                    <div class="flex items-center gap-2.5 min-w-0 pr-2">
-                      <span class="font-cinzel font-bold ${cat.color} text-xs">#${idx + 1}</span>
-                      <div class="truncate">
-                        <div class="font-playfair text-xs sm:text-sm text-noir-creme group-hover:text-noir-gold font-semibold truncate transition-colors">${item.title}</div>
-                        <div class="font-mono text-[9px] text-noir-aged truncate">${item.details || (item.artist + ' • ' + (item.mode || 'audit'))}</div>
-                      </div>
-                    </div>
-                    <div class="text-right shrink-0">
-                      <div class="font-cinzel text-xs sm:text-sm font-black ${cat.color}">${item.score.toFixed(1)} / 100</div>
-                      <span class="font-mono text-[8px] px-1.5 py-0.5 rounded ${item.score >= 65 ? 'bg-emerald-950/80 border border-emerald-500/50 text-emerald-300' : 'bg-rose-950/80 border border-rose-600/50 text-rose-300'} font-bold uppercase tracking-wider">
-                        ${item.verdict || (item.score >= 65 ? 'HIGH AFFINITY' : 'SWATTER HAZARD')}
-                      </span>
-                    </div>
-                  </div>
-                `).join('')}
+                ${displayItems.map((item, idx) => renderSongItem(item, idx, cat.color, item.isRecent)).join('')}
               </div>
             </div>
             <div class="pt-2.5 mt-3 border-t border-noir-800 text-[9px] font-mono text-noir-aged/70 flex justify-between items-center">
@@ -1559,16 +1690,42 @@ window.addEventListener('DOMContentLoaded', () => {
         `;
       }).join('');
 
-      // Attach song-item click handler to test directly in the rater
+      leaderboardCardsContainer.innerHTML = cardsHtml;
+      attachSongItemClickHandlers();
+    }
+
+    function renderSongItem(item, idx, colorClass, isRecent = false) {
+      const recentHighlight = isRecent ? 'border-noir-gold shadow-[0_0_12px_rgba(212,175,55,0.35)] bg-noir-900/90 highlight-recent-item' : 'border-noir-700/70 bg-noir-950/80';
+      return `
+        <div class="song-item group flex items-center justify-between p-2 rounded-lg border ${recentHighlight} hover:border-noir-gold transition-all cursor-pointer" data-song="${item.title}" data-mode="${item.mode || 'courtship'}" data-score="${item.score}">
+          <div class="flex items-center gap-2.5 min-w-0 pr-2">
+            <span class="font-cinzel font-bold ${colorClass} text-xs">#${idx + 1}</span>
+            <div class="truncate">
+              <div class="flex items-center gap-1.5 truncate">
+                <span class="font-playfair text-xs sm:text-sm text-noir-creme group-hover:text-noir-gold font-semibold truncate transition-colors">${item.title}</span>
+                ${isRecent ? '<span class="px-1.5 py-0.2 rounded bg-amber-400 text-noir-950 font-mono text-[8px] font-bold uppercase tracking-wider shrink-0 animate-pulse">JUST AUDITED</span>' : ''}
+              </div>
+              <div class="font-mono text-[9px] text-noir-aged truncate">${item.details || (item.artist + ' • ' + (item.mode || 'audit'))}</div>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="font-cinzel text-xs sm:text-sm font-black ${colorClass}">${Number(item.score).toFixed(1)} / 100</div>
+            <span class="font-mono text-[8px] px-1.5 py-0.5 rounded ${item.score >= 65 ? 'bg-emerald-950/80 border border-emerald-500/50 text-emerald-300' : 'bg-rose-950/80 border border-rose-600/50 text-rose-300'} font-bold uppercase tracking-wider">
+              ${item.verdict || (item.score >= 65 ? 'HIGH AFFINITY' : 'SWATTER HAZARD')}
+            </span>
+          </div>
+        </div>
+      `;
+    }
+
+    function attachSongItemClickHandlers() {
       document.querySelectorAll('.song-item').forEach(el => {
         el.addEventListener('click', () => {
           const songTitle = el.getAttribute('data-song') || 'Archived Specimen';
-          const mode = el.getAttribute('data-mode') || 'courtship';
           document.getElementById('stage-top').scrollIntoView({ behavior: 'smooth' });
           resetToPristine(false);
           showToast(`AUDITING ARCHIVED TRACK: "${songTitle}"`);
           setTimeout(() => {
-            // Find if there's a demo or prepare online search
             searchOnlineSongs(songTitle);
             tabBtnOnline.click();
           }, 300);
@@ -1794,7 +1951,7 @@ def handle_leaderboard():
     details = body.get('details', '')
     is_good = score >= 65.0
 
-    cat = 'swatter' if score < 50 else ('organ' if mode == 'territorial' else ('affinity' if score >= 85 else 'courtship'))
+    cat = 'swatter' if score < 50 else ('sleep' if mode == 'sleep' else ('organ' if mode == 'territorial' else ('affinity' if score >= 85 else 'courtship')))
     
     entry = {
         "id": f"entry-{abs(hash(title + str(score))) % 100000}",
