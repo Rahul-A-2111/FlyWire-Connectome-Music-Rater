@@ -175,7 +175,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
        1930s NOIR SPARKLE BUTTON EFFECT (ADAPTED TO PALETTE)
        ======================================================== */
     :root {
-      --spark: 1.8s;
+      --spark: 10s;
+      --spark-half: 5s;
       --transition: 0.3s;
       --cut: 1.5px;
     }
@@ -211,7 +212,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     /* Dual radial ambient highlight inside button reflecting palette */
     .sparkle-button::after,
-    button:not(.no-sparkle)::after {
+    button:not(.no-sparkle):after {
       content: "";
       position: absolute;
       inset: 0;
@@ -250,7 +251,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       overflow: hidden;
       mask: linear-gradient(white, transparent 55%);
       -webkit-mask: linear-gradient(white, transparent 55%);
-      animation: flip calc(var(--spark) * 2) infinite steps(2, end);
+      animation: flip var(--spark) infinite steps(2, end);
       pointer-events: none;
       z-index: 1;
     }
@@ -280,7 +281,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         #ffffff 360deg
       );
       transition: opacity var(--transition);
-      animation: rotate-spark var(--spark) linear infinite both;
+      animation: rotate-spark var(--spark-half, calc(var(--spark) / 2)) linear infinite both;
     }
 
     @keyframes rotate-spark {
