@@ -170,6 +170,204 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       background: #d4af37;
       border-radius: 3px;
     }
+
+    /* ========================================================
+       1930s NOIR SPARKLE BUTTON EFFECT (ADAPTED TO PALETTE)
+       ======================================================== */
+    :root {
+      --spark: 1.8s;
+      --transition: 0.3s;
+      --cut: 1.5px;
+    }
+
+    .sparkle-button,
+    button:not(.no-sparkle) {
+      --active: 0;
+      --spark-color: rgba(212, 175, 55, 0.95);
+      --spark-glow: rgba(212, 175, 55, 0.45);
+      --spark-border: rgba(212, 175, 55, 0.45);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      cursor: pointer;
+      white-space: nowrap;
+      scale: calc(1 + (var(--active) * 0.035));
+      box-shadow: 0 0 calc(var(--active) * 24px) calc(var(--active) * 4px) var(--spark-glow),
+                  0 0 calc(var(--active) * 6px) 0 var(--spark-border) inset;
+      transition: box-shadow var(--transition), scale var(--transition), transform var(--transition), filter var(--transition);
+    }
+
+    .sparkle-button:is(:hover, :focus-visible),
+    button:not(.no-sparkle):is(:hover, :focus-visible) {
+      --active: 1;
+      --play-state: running;
+    }
+
+    .sparkle-button:active,
+    button:not(.no-sparkle):active {
+      scale: 0.98;
+      transition: 0.12s;
+    }
+
+    /* Dual radial ambient highlight inside button reflecting palette */
+    .sparkle-button::after,
+    button:not(.no-sparkle)::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(
+        55% 65% at center 100%,
+        var(--spark-glow) 0%,
+        transparent 100%
+      );
+      opacity: calc(var(--active) * 0.35);
+      pointer-events: none;
+      z-index: 1;
+      transition: opacity var(--transition);
+    }
+
+    /* Outer border halo glow */
+    .sparkle-button:before,
+    button:not(.no-sparkle):before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      border: 1.5px solid var(--spark-border);
+      border-radius: inherit;
+      opacity: var(--active, 0);
+      pointer-events: none;
+      transition: opacity var(--transition);
+    }
+
+    /* The rotating spark perimeter beam */
+    .spark {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      rotate: 0deg;
+      overflow: hidden;
+      mask: linear-gradient(white, transparent 55%);
+      -webkit-mask: linear-gradient(white, transparent 55%);
+      animation: flip calc(var(--spark) * 2) infinite steps(2, end);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes flip {
+      to {
+        rotate: 360deg;
+      }
+    }
+
+    .spark:before {
+      content: "";
+      position: absolute;
+      width: 250%;
+      aspect-ratio: 1;
+      top: 0%;
+      left: 50%;
+      z-index: 1;
+      translate: -50% -15%;
+      rotate: 0;
+      transform: rotate(-90deg);
+      opacity: calc((var(--active) * 0.6) + 0.45);
+      background: conic-gradient(
+        from 0deg,
+        transparent 0 330deg,
+        var(--spark-color, rgba(212, 175, 55, 0.9)) 350deg,
+        #ffffff 360deg
+      );
+      transition: opacity var(--transition);
+      animation: rotate-spark var(--spark) linear infinite both;
+    }
+
+    @keyframes rotate-spark {
+      to {
+        transform: rotate(90deg);
+      }
+    }
+
+    /* Ensure text & icons sit above the rotating spark beam */
+    .sparkle-button > *:not(.spark),
+    button:not(.no-sparkle) > *:not(.spark) {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Icon bounce animation on hover from the user's CSS */
+    .sparkle-button:is(:hover, :focus-visible) .material-symbols-outlined,
+    .sparkle-button:is(:hover, :focus-visible) svg,
+    button:not(.no-sparkle):is(:hover, :focus-visible) .material-symbols-outlined,
+    button:not(.no-sparkle):is(:hover, :focus-visible) svg {
+      animation: sparkle-bounce 0.6s ease;
+    }
+
+    @keyframes sparkle-bounce {
+      35%, 65% {
+        scale: 1.22;
+      }
+    }
+
+    /* COLOR THEME VARIATIONS (Preserving 1930s Noir Palette) */
+    /* Red / Danger / Swatter buttons */
+    #preset-discord,
+    button[data-category="swatter"],
+    button[class*="border-rose-700"],
+    button[class*="border-rose-900"],
+    .btn-swatter-trigger {
+      --spark-color: #f87171;
+      --spark-glow: rgba(239, 68, 68, 0.55);
+      --spark-border: rgba(239, 68, 68, 0.65);
+    }
+
+    /* Gold / Primary / Glamour Noir buttons */
+    #btn-see-results,
+    #btn-view-ledger,
+    #btn-reset-app,
+    #preset-daft,
+    #typebar-action-btn,
+    .btn-return-and-rate,
+    .btn-audit-online,
+    .leaderboard-toggle-btn,
+    #tab-btn-upload,
+    .mode-btn,
+    button[data-category="affinity"],
+    button[data-category="courtship"],
+    button[data-category="all"],
+    button[data-category="recent"] {
+      --spark-color: #fbbf24;
+      --spark-glow: rgba(245, 158, 11, 0.6);
+      --spark-border: rgba(212, 175, 55, 0.7);
+    }
+
+    /* Mechanosensory / Violet / Electric buttons */
+    button[data-category="organ"],
+    .mode-btn[data-mode="territorial"] {
+      --spark-color: #d9b9ff;
+      --spark-glow: rgba(217, 185, 255, 0.45);
+      --spark-border: rgba(217, 185, 255, 0.6);
+    }
+
+    /* Nocturnal / Indigo / Sleep buttons */
+    button[data-category="sleep"],
+    .mode-btn[data-mode="sleep"] {
+      --spark-color: #818cf8;
+      --spark-glow: rgba(129, 140, 248, 0.45);
+      --spark-border: rgba(129, 140, 248, 0.6);
+    }
+
+    /* Muted / Utility buttons */
+    .search-tag,
+    .close-leaderboard-btn,
+    #tab-btn-online,
+    #btn-skip-video,
+    .btn-preview-audio {
+      --spark-color: #d4af37;
+      --spark-glow: rgba(212, 175, 55, 0.35);
+      --spark-border: rgba(212, 175, 55, 0.35);
+    }
 </style>
 </head>
 <body class="relative min-h-screen flex flex-col justify-between selection:bg-noir-gold selection:text-noir-950 font-playfair">
@@ -280,8 +478,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
               <span id="film-live-tag">OPTICAL REEL ROLLING</span>
             </div>
             <div class="flex items-center gap-2">
-              <button id="btn-skip-video" class="pointer-events-auto px-2.5 py-0.5 rounded-full bg-noir-900/90 border border-noir-gold/80 text-noir-gold hover:text-noir-creme text-[10px] font-mono tracking-wider transition-all shadow hover:bg-noir-850 cursor-pointer" type="button">
-                SKIP TO REPORT ➔
+              <button id="btn-skip-video" class="pointer-events-auto px-2.5 py-0.5 rounded-full bg-noir-900/90 border border-noir-gold/80 text-noir-gold hover:text-noir-creme text-[10px] font-mono tracking-wider transition-all shadow hover:bg-noir-850 cursor-pointer sparkle-button" type="button">
+                <span class="relative z-10">SKIP TO REPORT ➔</span>
+                <span class="spark" aria-hidden="true"></span>
               </button>
               <div class="font-mono text-xs text-noir-creme bg-noir-900/90 px-2.5 py-0.5 rounded border border-noir-700" id="film-timer">
                 00:00 / 00:10
@@ -309,8 +508,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             <p class="font-vintage text-xs text-noir-sepia mb-5 leading-relaxed" id="reveal-modal-desc">
               The male Drosophila connectome has fully resolved your harmonic acoustic vibrations. Step inside the screening booth!
             </p>
-            <button class="w-full py-3.5 px-6 rounded-xl font-cinzel text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-gold via-amber-200 to-noir-gold text-noir-950 shadow-xl hover:brightness-110 active:scale-95 transition-all btn-gold-pulse cursor-pointer" id="btn-see-results">
-              SEE RESULTS ➔
+            <button class="w-full py-3.5 px-6 rounded-xl font-cinzel text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-gold via-amber-200 to-noir-gold text-noir-950 shadow-xl hover:brightness-110 active:scale-95 transition-all btn-gold-pulse cursor-pointer sparkle-button" id="btn-see-results">
+              <span class="relative z-10">SEE RESULTS ➔</span>
+              <span class="spark" aria-hidden="true"></span>
             </button>
           </div>
         </div>
@@ -324,14 +524,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <div class="flex flex-col items-center">
       <!-- Mode buttons row -->
       <div class="flex items-center justify-center gap-2 p-1.5 rounded-full bg-noir-900/90 border border-noir-700 shadow-lg w-full" id="mode-toggle-group">
-        <button class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-wider uppercase transition-all bg-noir-gold text-noir-950 font-bold" data-mode="courtship" type="button">
-          ♫ Courtship
+        <button class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-wider uppercase transition-all bg-noir-gold text-noir-950 font-bold sparkle-button" data-mode="courtship" type="button">
+          <span class="relative z-10">♫ Courtship</span>
+          <span class="spark" aria-hidden="true"></span>
         </button>
-        <button class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-wider uppercase transition-all text-noir-aged hover:text-noir-creme" data-mode="territorial" type="button">
-          ⚡ Territorial
+        <button class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-wider uppercase transition-all text-noir-aged hover:text-noir-creme sparkle-button" data-mode="territorial" type="button">
+          <span class="relative z-10">⚡ Territorial</span>
+          <span class="spark" aria-hidden="true"></span>
         </button>
-        <button class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-wider uppercase transition-all text-noir-aged hover:text-noir-creme" data-mode="sleep" type="button">
-          ☾ Quiet / Sleep
+        <button class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-wider uppercase transition-all text-noir-aged hover:text-noir-creme sparkle-button" data-mode="sleep" type="button">
+          <span class="relative z-10">☾ Quiet / Sleep</span>
+          <span class="spark" aria-hidden="true"></span>
         </button>
       </div>
 
@@ -352,11 +555,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     
     <!-- SOURCE SELECTION TABS: UPLOAD VS ONLINE ARCHIVE -->
     <div class="flex items-center justify-center gap-2 mb-2" id="source-tabs">
-      <button class="px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all border border-noir-gold bg-noir-900 text-noir-gold font-bold shadow cursor-pointer" id="tab-btn-upload" type="button">
-        📁 Upload Audio File
+      <button class="px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all border border-noir-gold bg-noir-900 text-noir-gold font-bold shadow cursor-pointer sparkle-button" id="tab-btn-upload" type="button">
+        <span class="relative z-10">📁 Upload Audio File</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
-      <button class="px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all border border-noir-700 bg-noir-950 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 cursor-pointer" id="tab-btn-online" type="button">
-        🌐 Search Archives Online
+      <button class="px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all border border-noir-700 bg-noir-950 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 cursor-pointer sparkle-button" id="tab-btn-online" type="button">
+        <span class="relative z-10">🌐 Search Archives Online</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
     </div>
 
@@ -381,30 +586,33 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       </div>
 
       <!-- Right Action Button: Upload Arrow or Search Button -->
-      <button class="shrink-0 ml-2 w-10 h-10 rounded-full bg-gradient-to-br from-noir-gold via-amber-400 to-amber-600 text-noir-950 flex items-center justify-center font-bold shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer" id="typebar-action-btn" title="Upload Audio File" type="button">
-        <span class="material-symbols-outlined font-black text-xl" id="typebar-action-icon">arrow_upward</span>
+      <button class="shrink-0 ml-2 w-10 h-10 rounded-full bg-gradient-to-br from-noir-gold via-amber-400 to-amber-600 text-noir-950 flex items-center justify-center font-bold shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer sparkle-button" id="typebar-action-btn" title="Upload Audio File" type="button">
+        <span class="material-symbols-outlined font-black text-xl relative z-10" id="typebar-action-icon">arrow_upward</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
     </div>
 
     <!-- SUB-ROW 1: QUICK DEMOS (Visible in Upload Mode) -->
     <div class="mt-2.5 flex flex-wrap items-center justify-center gap-2" id="upload-quick-demos">
-      <button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-noir-900/90 border border-noir-gold/80 hover:border-noir-gold text-noir-gold hover:text-noir-creme font-mono text-[11px] tracking-wider transition-all shadow active:scale-95 cursor-pointer" id="preset-daft" type="button">
-        <span>✦ Quick Demo: "Around The World" (Daft Punk)</span>
+      <button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-noir-900/90 border border-noir-gold/80 hover:border-noir-gold text-noir-gold hover:text-noir-creme font-mono text-[11px] tracking-wider transition-all shadow active:scale-95 cursor-pointer sparkle-button" id="preset-daft" type="button">
+        <span class="relative z-10">✦ Quick Demo: "Around The World" (Daft Punk)</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
-      <button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-noir-900/90 border border-rose-700/80 hover:border-rose-500 text-rose-300 hover:text-rose-100 font-mono text-[11px] tracking-wider transition-all shadow active:scale-95 cursor-pointer" id="preset-discord" type="button">
-        <span>⚠ Quick Demo: "Discordant Screech / Swatter Noise"</span>
+      <button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-noir-900/90 border border-rose-700/80 hover:border-rose-500 text-rose-300 hover:text-rose-100 font-mono text-[11px] tracking-wider transition-all shadow active:scale-95 cursor-pointer sparkle-button" id="preset-discord" type="button">
+        <span class="relative z-10">⚠ Quick Demo: "Discordant Screech / Swatter Noise"</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
     </div>
 
     <!-- SUB-ROW 2: SUGGESTED CHIPS (Visible in Online Search Mode) -->
     <div class="hidden mt-2.5 flex flex-wrap items-center justify-center gap-1.5 text-[10px] font-mono text-noir-aged" id="online-suggestion-chips">
       <span class="text-noir-gold font-bold">Suggested:</span>
-      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Cab Calloway Minnie the Moocher">Cab Calloway</button>
-      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Duke Ellington Caravan">Duke Ellington</button>
-      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Miles Davis So What">Miles Davis</button>
-      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Queen Bohemian Rhapsody">Queen</button>
-      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Stevie Wonder Superstition">Stevie Wonder</button>
-      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Erik Satie Gymnopedie">Erik Satie</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer sparkle-button" data-query="Cab Calloway Minnie the Moocher">Cab Calloway</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer sparkle-button" data-query="Duke Ellington Caravan">Duke Ellington</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer sparkle-button" data-query="Miles Davis So What">Miles Davis</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer sparkle-button" data-query="Queen Bohemian Rhapsody">Queen</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer sparkle-button" data-query="Stevie Wonder Superstition">Stevie Wonder</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer sparkle-button" data-query="Erik Satie Gymnopedie">Erik Satie</button>
     </div>
 
     <!-- SUB-ROW 3: ONLINE SEARCH RESULTS EXPANDED CONTAINER -->
@@ -417,10 +625,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     <!-- PROMINENT DIRECT LEADERBOARD TOGGLE -->
     <div class="mt-3 flex flex-col items-center justify-center">
-      <button aria-controls="leaderboard-section" aria-expanded="false" class="leaderboard-toggle-btn group inline-flex items-center gap-2.5 px-6 py-2 rounded-full border-2 border-noir-gold/80 bg-gradient-to-r from-noir-900 via-noir-850 to-noir-900 text-noir-gold hover:text-noir-creme hover:border-noir-gold font-cinzel text-xs tracking-widest font-bold uppercase shadow-[0_4px_20px_rgba(0,0,0,0.8)] hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all active:scale-95 cursor-pointer" type="button">
-        <span class="text-amber-400 group-hover:scale-110 transition-transform">★</span>
-        <span class="btn-toggle-text">VIEW HALL OF ACCLAIM [SHOW LEADERBOARD]</span>
-        <span class="material-symbols-outlined text-base btn-toggle-icon group-hover:translate-y-0.5 transition-transform">keyboard_arrow_down</span>
+      <button aria-controls="leaderboard-section" aria-expanded="false" class="leaderboard-toggle-btn group inline-flex items-center gap-2.5 px-6 py-2 rounded-full border-2 border-noir-gold/80 bg-gradient-to-r from-noir-900 via-noir-850 to-noir-900 text-noir-gold hover:text-noir-creme hover:border-noir-gold font-cinzel text-xs tracking-widest font-bold uppercase shadow-[0_4px_20px_rgba(0,0,0,0.8)] hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all active:scale-95 cursor-pointer sparkle-button" type="button">
+        <span class="text-amber-400 group-hover:scale-110 transition-transform relative z-10">★</span>
+        <span class="btn-toggle-text relative z-10">VIEW HALL OF ACCLAIM [SHOW LEADERBOARD]</span>
+        <span class="material-symbols-outlined text-base btn-toggle-icon group-hover:translate-y-0.5 transition-transform relative z-10">keyboard_arrow_down</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
     </div>
 
@@ -471,13 +680,15 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       <span>✦ CONNECTOME AUDIT LEDGER OPEN</span>
     </div>
     <div class="flex items-center gap-2">
-      <button class="btn-return-and-rate inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full border border-noir-gold bg-noir-900 text-noir-gold hover:bg-noir-gold hover:text-noir-950 text-xs font-mono tracking-wider transition-all shadow cursor-pointer font-bold" type="button">
-        <span>✦ RATE ANOTHER SONG</span>
-        <span class="material-symbols-outlined text-sm">arrow_upward</span>
+      <button class="btn-return-and-rate inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full border border-noir-gold bg-noir-900 text-noir-gold hover:bg-noir-gold hover:text-noir-950 text-xs font-mono tracking-wider transition-all shadow cursor-pointer font-bold sparkle-button" type="button">
+        <span class="relative z-10">✦ RATE ANOTHER SONG</span>
+        <span class="material-symbols-outlined text-sm relative z-10">arrow_upward</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
-      <button class="close-leaderboard-btn inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-noir-700 bg-noir-900/90 hover:border-noir-gold text-noir-aged hover:text-noir-gold text-xs font-mono tracking-wider transition-all cursor-pointer" type="button">
-        <span class="material-symbols-outlined text-sm">close</span>
-        <span>COLLAPSE</span>
+      <button class="close-leaderboard-btn inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-noir-700 bg-noir-900/90 hover:border-noir-gold text-noir-aged hover:text-noir-gold text-xs font-mono tracking-wider transition-all cursor-pointer sparkle-button" type="button">
+        <span class="material-symbols-outlined text-sm relative z-10">close</span>
+        <span class="relative z-10">COLLAPSE</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
     </div>
   </div>
@@ -503,26 +714,33 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     <!-- Category Tabs Filter -->
     <div class="flex flex-wrap items-center justify-center gap-2 max-w-4xl mx-auto mt-2" id="leaderboard-tabs" role="tablist">
-      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-gold bg-noir-gold text-noir-950 font-bold shadow active-tab-btn" data-category="all" type="button">
-        All Categories
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-gold bg-noir-gold text-noir-950 font-bold shadow active-tab-btn sparkle-button" data-category="all" type="button">
+        <span class="relative z-10">All Categories</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
-      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="recent" type="button">
-        ⚡ Live / Recent Audits
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 sparkle-button" data-category="recent" type="button">
+        <span class="relative z-10">⚡ Live / Recent Audits</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
-      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="affinity" type="button">
-        ★ All-Time Affinity
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 sparkle-button" data-category="affinity" type="button">
+        <span class="relative z-10">★ All-Time Affinity</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
-      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="courtship" type="button">
-        ♫ Courtship Harmonics
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 sparkle-button" data-category="courtship" type="button">
+        <span class="relative z-10">♫ Courtship Harmonics</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
-      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="organ" type="button">
-        ⚡ Johnston's Vibration
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 sparkle-button" data-category="organ" type="button">
+        <span class="relative z-10">⚡ Johnston's Vibration</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
-      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="sleep" type="button">
-        ☾ Nocturnal Slumber
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 sparkle-button" data-category="sleep" type="button">
+        <span class="relative z-10">☾ Nocturnal Slumber</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
-      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-rose-900/60 bg-noir-900/80 text-rose-300 hover:text-rose-100 hover:border-rose-500" data-category="swatter" type="button">
-        ⚠ Dreadful Swatter Triggers
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-rose-900/60 bg-noir-900/80 text-rose-300 hover:text-rose-100 hover:border-rose-500 sparkle-button" data-category="swatter" type="button">
+        <span class="relative z-10">⚠ Dreadful Swatter Triggers</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
     </div>
   </div>
@@ -538,12 +756,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       <span class="text-noir-gold">✦ ARCHIVE CITATION:</span> Drosophila Acoustic Courtship Atlas, Vol. XIV, 1934. All entries certified by Lord Drosophila, Esq.
     </div>
     <div class="flex items-center gap-2.5">
-      <button class="btn-return-and-rate inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border-2 border-noir-gold bg-noir-900 text-noir-gold hover:bg-noir-gold hover:text-noir-950 font-cinzel text-xs tracking-wider font-bold transition-all shadow cursor-pointer" type="button">
-        <span>✦ RATE ANOTHER SONG ✦</span>
+      <button class="btn-return-and-rate inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border-2 border-noir-gold bg-noir-900 text-noir-gold hover:bg-noir-gold hover:text-noir-950 font-cinzel text-xs tracking-wider font-bold transition-all shadow cursor-pointer sparkle-button" type="button">
+        <span class="relative z-10">✦ RATE ANOTHER SONG ✦</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
-      <button class="close-leaderboard-btn inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-noir-gold/70 bg-noir-900/90 text-noir-gold hover:text-noir-creme hover:bg-noir-850 font-mono text-xs tracking-wider transition-all cursor-pointer" type="button">
-        <span class="material-symbols-outlined text-sm">keyboard_arrow_up</span>
-        <span>HIDE &amp; RETURN TO BOOTH</span>
+      <button class="close-leaderboard-btn inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-noir-gold/70 bg-noir-900/90 text-noir-gold hover:text-noir-creme hover:bg-noir-850 font-mono text-xs tracking-wider transition-all cursor-pointer sparkle-button" type="button">
+        <span class="material-symbols-outlined text-sm relative z-10">keyboard_arrow_up</span>
+        <span class="relative z-10">HIDE &amp; RETURN TO BOOTH</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
     </div>
   </div>
@@ -641,11 +861,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     <!-- RE-EVALUATION PROMINENT ACTION -->
     <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
-      <button class="px-6 sm:px-8 py-3.5 rounded-xl font-cinzel text-xs sm:text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-850 via-noir-800 to-noir-850 text-noir-gold border-2 border-noir-gold hover:bg-noir-gold hover:text-noir-950 transition-all duration-300 shadow-[0_0_25px_rgba(212,175,55,0.3)] hover:shadow-[0_0_35px_rgba(212,175,55,0.7)] cursor-pointer" id="btn-reset-app" type="button">
-        ✦ CHOOSE NEW SONG FOR RATING ✦
+      <button class="px-6 sm:px-8 py-3.5 rounded-xl font-cinzel text-xs sm:text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-850 via-noir-800 to-noir-850 text-noir-gold border-2 border-noir-gold hover:bg-noir-gold hover:text-noir-950 transition-all duration-300 shadow-[0_0_25px_rgba(212,175,55,0.3)] hover:shadow-[0_0_35px_rgba(212,175,55,0.7)] cursor-pointer sparkle-button" id="btn-reset-app" type="button">
+        <span class="relative z-10">✦ CHOOSE NEW SONG FOR RATING ✦</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
-      <button class="px-6 sm:px-8 py-3.5 rounded-xl font-cinzel text-xs sm:text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-900 via-noir-850 to-noir-900 text-amber-300 border-2 border-amber-400/80 hover:border-amber-300 hover:text-noir-950 hover:bg-amber-300 transition-all duration-300 shadow-[0_0_20px_rgba(245,158,11,0.3)] cursor-pointer" id="btn-view-ledger" type="button">
-        ★ VIEW ON LEADERBOARD ➔
+      <button class="px-6 sm:px-8 py-3.5 rounded-xl font-cinzel text-xs sm:text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-900 via-noir-850 to-noir-900 text-amber-300 border-2 border-amber-400/80 hover:border-amber-300 hover:text-noir-950 hover:bg-amber-300 transition-all duration-300 shadow-[0_0_20px_rgba(245,158,11,0.3)] cursor-pointer sparkle-button" id="btn-view-ledger" type="button">
+        <span class="relative z-10">★ VIEW ON LEADERBOARD ➔</span>
+        <span class="spark" aria-hidden="true"></span>
       </button>
     </div>
   </div>
@@ -661,6 +883,36 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
 <!-- SCRIPT ENGINE -->
 <script>
+    // Universal Sparkle Button Enhancer (1930s Rubber Hose Noir Adaptation)
+    function applySparkleEffect(root = document) {
+      if (!root) return;
+      const buttons = [];
+      if (root.matches && root.matches('button:not(.no-sparkle)')) {
+        buttons.push(root);
+      }
+      if (root.querySelectorAll) {
+        root.querySelectorAll('button:not(.no-sparkle)').forEach(b => buttons.push(b));
+      }
+      buttons.forEach(btn => {
+        btn.classList.add('sparkle-button');
+        if (!btn.querySelector('.spark')) {
+          // Wrap any bare text nodes in a relative z-10 span so text remains razor sharp above the rotating spark beam
+          Array.from(btn.childNodes).forEach(node => {
+            if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) {
+              const span = document.createElement('span');
+              span.className = 'relative z-10';
+              span.textContent = node.textContent;
+              btn.replaceChild(span, node);
+            }
+          });
+          const spark = document.createElement('span');
+          spark.className = 'spark';
+          spark.setAttribute('aria-hidden', 'true');
+          btn.appendChild(spark);
+        }
+      });
+    }
+
 window.addEventListener('DOMContentLoaded', () => {
     // Media & Visual Assets
     const IMG_HERO_IDLE = "/static/fly_hero.png";
@@ -1038,6 +1290,8 @@ window.addEventListener('DOMContentLoaded', () => {
       fileInput.value = '';
       unifiedConsolePane.classList.remove('hidden', 'opacity-0', 'scale-95');
       setSourceMode(currentSourceMode);
+
+      applySparkleEffect();
 
       if (showResetToast) {
         showToast("PREVIOUS AUDIT ARCHIVED • RECEPTORS ZEROED");
@@ -1588,6 +1842,7 @@ window.addEventListener('DOMContentLoaded', () => {
           }
         });
       });
+      applySparkleEffect(onlineResultsContainer);
     }
 
     // LEADERBOARD / HALL OF ACCLAIM ENGINE
@@ -1691,6 +1946,7 @@ window.addEventListener('DOMContentLoaded', () => {
           </div>
         `;
         attachSongItemClickHandlers();
+        applySparkleEffect(leaderboardCardsContainer);
         return;
       }
 
@@ -1773,6 +2029,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
       leaderboardCardsContainer.innerHTML = cardsHtml;
       attachSongItemClickHandlers();
+      applySparkleEffect(leaderboardCardsContainer);
     }
 
     function renderSongItem(item, idx, colorClass, isRecent = false) {
@@ -1918,6 +2175,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Initial Leaderboard Fetch
     fetchLeaderboard();
+
+    // Initialize sparkle effects across all buttons
+    applySparkleEffect();
 });
 </script>
 </body>
