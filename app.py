@@ -301,7 +301,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
 
         <!-- STATE 3: INTERACTIVE REVEAL POPUP MODAL OVERLAY -->
-        <div class="absolute inset-0 z-30 flex items-center justify-center bg-noir-950/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-500 transform scale-90" id="reveal-popup">
+        <div class="absolute inset-0 z-30 flex items-center justify-center bg-noir-950/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-500 transform scale-90" id="reveal-popup" style="display: none;">
           <div class="text-center p-6 border-2 border-noir-gold/90 rounded-2xl bg-noir-900 shadow-[0_20px_50px_rgba(0,0,0,0.9)] max-w-sm w-full mx-4 relative overflow-hidden">
             <div class="absolute -top-12 -right-12 w-28 h-28 bg-noir-gold/20 rounded-full blur-2xl"></div>
             <div class="text-[11px] font-mono tracking-widest text-noir-aged mb-1">DROSOPHILA BRAIN SCAN COMPLETE</div>
@@ -347,79 +347,73 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     </div>
   </div>
 
-  <!-- CONTROL CONSOLE (UPLOAD VS ONLINE SEARCH) -->
-  <div class="w-full max-w-xl mt-3 relative z-30">
+  <!-- UNIFIED CONTROL CONSOLE (UPLOAD AND ONLINE SEARCH SHARE THE EXACT SAME TYPEBAR) -->
+  <div class="w-full max-w-xl mt-3 relative z-30" id="unified-console-pane">
     
-    <!-- SOURCE SELECTION TABS: UPLOAD OR ONLINE SEARCH -->
+    <!-- SOURCE SELECTION TABS: UPLOAD VS ONLINE ARCHIVE -->
     <div class="flex items-center justify-center gap-2 mb-2" id="source-tabs">
-      <button class="px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all border border-noir-gold bg-noir-900 text-noir-gold font-bold shadow" id="tab-btn-upload" type="button">
+      <button class="px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all border border-noir-gold bg-noir-900 text-noir-gold font-bold shadow cursor-pointer" id="tab-btn-upload" type="button">
         📁 Upload Audio File
       </button>
-      <button class="px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all border border-noir-700 bg-noir-950 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" id="tab-btn-online" type="button">
+      <button class="px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all border border-noir-700 bg-noir-950 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 cursor-pointer" id="tab-btn-online" type="button">
         🌐 Search Archives Online
       </button>
     </div>
 
-    <!-- PANE 1: LOCAL FILE UPLOAD -->
-    <div class="relative transition-all duration-500 ease-out" id="upload-pane">
-      <label class="group relative flex items-center justify-between w-full p-2 pl-4 pr-2 rounded-full bg-noir-900/95 border-2 border-noir-700 hover:border-noir-gold focus-within:border-noir-gold shadow-[0_12px_40px_rgba(0,0,0,0.85)] backdrop-blur-md cursor-pointer transition-all" for="audio-file-input">
-        <div class="flex items-center gap-3 flex-1 overflow-hidden">
-          <span class="material-symbols-outlined text-noir-gold opacity-90 group-hover:scale-110 transition-transform text-2xl">mic</span>
+    <!-- THE UNIFIED PILL TYPEBAR (SHARABLE FOR BOTH FILE DROP/PICK AND ONLINE TEXT SEARCH) -->
+    <div class="group relative flex items-center justify-between w-full p-2 pl-4 pr-2 rounded-full bg-noir-900/95 border-2 border-noir-700 hover:border-noir-gold focus-within:border-noir-gold shadow-[0_12px_40px_rgba(0,0,0,0.85)] backdrop-blur-md transition-all cursor-pointer" id="unified-typebar">
+      
+      <!-- Left Leading Icon (Microphone for Upload, Search Magnifier for Online) -->
+      <span class="material-symbols-outlined text-noir-gold opacity-90 group-hover:scale-110 transition-transform text-2xl shrink-0 mr-3 select-none" id="typebar-icon">mic</span>
+      
+      <!-- Interactive Central Slot -->
+      <div class="flex-1 overflow-hidden relative flex items-center min-w-0" id="typebar-interactive-slot">
+        <!-- MODE 1: Upload File Label & Invisible Input -->
+        <div class="w-full flex items-center select-none" id="typebar-upload-slot">
           <span class="font-playfair italic text-xs sm:text-sm text-noir-aged truncate group-hover:text-noir-creme transition-colors" id="chat-bar-placeholder">
             Drag &amp; drop audio file or click to upload (.mp3, .wav, .m4a)...
           </span>
+          <input accept="audio/*" class="sr-only" id="audio-file-input" type="file"/>
         </div>
-        <input accept="audio/*" class="sr-only" id="audio-file-input" type="file"/>
-        <button class="shrink-0 ml-2 w-10 h-10 rounded-full bg-gradient-to-br from-noir-gold via-amber-400 to-amber-600 text-noir-950 flex items-center justify-center font-bold shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer" onclick="document.getElementById('audio-file-input').click()" title="Upload Audio File" type="button">
-          <span class="material-symbols-outlined font-black text-xl">arrow_upward</span>
-        </button>
-      </label>
 
-      <!-- PROMINENT CLICKABLE QUICK DEMO BUTTONS -->
-      <div class="mt-2.5 flex flex-wrap items-center justify-center gap-2">
-        <button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-noir-900/90 border border-noir-gold/80 hover:border-noir-gold text-noir-gold hover:text-noir-creme font-mono text-[11px] tracking-wider transition-all shadow active:scale-95 cursor-pointer" id="preset-daft" type="button">
-          <span>✦ Quick Demo: "Around The World" (Daft Punk)</span>
-        </button>
-        <button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-noir-900/90 border border-rose-700/80 hover:border-rose-500 text-rose-300 hover:text-rose-100 font-mono text-[11px] tracking-wider transition-all shadow active:scale-95 cursor-pointer" id="preset-discord" type="button">
-          <span>⚠ Quick Demo: "Discordant Screech / Swatter Noise"</span>
-        </button>
+        <!-- MODE 2: Online Search Text Input (Replaces placeholder in same typebar!) -->
+        <input autocomplete="off" class="hidden w-full bg-transparent border-none text-noir-creme font-playfair italic text-xs sm:text-sm placeholder:text-noir-aged/70 focus:outline-none" id="online-search-input" placeholder="Enter artist or song name to search online archives (e.g. Daft Punk, Queen, Miles Davis)..." type="text"/>
       </div>
+
+      <!-- Right Action Button: Upload Arrow or Search Button -->
+      <button class="shrink-0 ml-2 w-10 h-10 rounded-full bg-gradient-to-br from-noir-gold via-amber-400 to-amber-600 text-noir-950 flex items-center justify-center font-bold shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer" id="typebar-action-btn" title="Upload Audio File" type="button">
+        <span class="material-symbols-outlined font-black text-xl" id="typebar-action-icon">arrow_upward</span>
+      </button>
     </div>
 
-    <!-- PANE 2: ONLINE SONG LOOKUP FROM INTERNET ARCHIVES -->
-    <div class="hidden transition-all duration-500 ease-out" id="online-pane">
-      <div class="p-3.5 rounded-2xl bg-noir-900/95 border-2 border-noir-gold/70 shadow-2xl backdrop-blur-md">
-        <!-- Search input group -->
-        <div class="flex items-center gap-2">
-          <div class="relative flex-1">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-noir-gold text-lg">search</span>
-            <input class="w-full pl-9 pr-3 py-2 rounded-xl bg-noir-950 border border-noir-700 text-noir-creme text-xs font-mono placeholder:text-noir-aged/60 focus:border-noir-gold focus:outline-none transition-all" id="online-search-input" placeholder="Search artist or track (e.g. Daft Punk, Duke Ellington, Queen)..." type="text"/>
-          </div>
-          <button class="px-4 py-2 rounded-xl bg-gradient-to-r from-noir-gold via-amber-300 to-noir-gold text-noir-950 font-cinzel text-xs font-bold tracking-wider hover:brightness-110 active:scale-95 transition-all shadow shrink-0 cursor-pointer" id="btn-online-search" type="button">
-            SEARCH ARCHIVES ➔
-          </button>
-        </div>
+    <!-- SUB-ROW 1: QUICK DEMOS (Visible in Upload Mode) -->
+    <div class="mt-2.5 flex flex-wrap items-center justify-center gap-2" id="upload-quick-demos">
+      <button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-noir-900/90 border border-noir-gold/80 hover:border-noir-gold text-noir-gold hover:text-noir-creme font-mono text-[11px] tracking-wider transition-all shadow active:scale-95 cursor-pointer" id="preset-daft" type="button">
+        <span>✦ Quick Demo: "Around The World" (Daft Punk)</span>
+      </button>
+      <button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-noir-900/90 border border-rose-700/80 hover:border-rose-500 text-rose-300 hover:text-rose-100 font-mono text-[11px] tracking-wider transition-all shadow active:scale-95 cursor-pointer" id="preset-discord" type="button">
+        <span>⚠ Quick Demo: "Discordant Screech / Swatter Noise"</span>
+      </button>
+    </div>
 
-        <!-- Quick suggestion chips -->
-        <div class="mt-2.5 flex flex-wrap items-center gap-1.5 text-[10px] font-mono text-noir-aged">
-          <span class="text-noir-gold">Suggested:</span>
-          <button class="search-tag px-2 py-0.5 rounded bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors" data-query="Cab Calloway Minnie the Moocher">Cab Calloway</button>
-          <button class="search-tag px-2 py-0.5 rounded bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors" data-query="Duke Ellington Caravan">Duke Ellington</button>
-          <button class="search-tag px-2 py-0.5 rounded bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors" data-query="Miles Davis So What">Miles Davis</button>
-          <button class="search-tag px-2 py-0.5 rounded bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors" data-query="Kraftwerk Autobahn">Kraftwerk</button>
-          <button class="search-tag px-2 py-0.5 rounded bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors" data-query="Stevie Wonder Superstition">Stevie Wonder</button>
-          <button class="search-tag px-2 py-0.5 rounded bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors" data-query="Billie Holiday Fine and Mellow">Billie Holiday</button>
-          <button class="search-tag px-2 py-0.5 rounded bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors" data-query="Erik Satie Gymnopedie">Erik Satie</button>
-        </div>
+    <!-- SUB-ROW 2: SUGGESTED CHIPS (Visible in Online Search Mode) -->
+    <div class="hidden mt-2.5 flex flex-wrap items-center justify-center gap-1.5 text-[10px] font-mono text-noir-aged" id="online-suggestion-chips">
+      <span class="text-noir-gold font-bold">Suggested:</span>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Cab Calloway Minnie the Moocher">Cab Calloway</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Duke Ellington Caravan">Duke Ellington</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Miles Davis So What">Miles Davis</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Queen Bohemian Rhapsody">Queen</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Stevie Wonder Superstition">Stevie Wonder</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Erik Satie Gymnopedie">Erik Satie</button>
+    </div>
 
-        <!-- Search results stream container -->
-        <div class="mt-3 max-h-56 overflow-y-auto custom-scroll space-y-2 pr-1" id="online-results-container">
-          <div class="text-center py-4 font-mono text-xs text-noir-aged italic" id="online-empty-hint">
-            ✦ Query any track or artist in the worldwide archive. High-fidelity 30-second audio previews will be retrieved for connectome audition.
-          </div>
-        </div>
+    <!-- SUB-ROW 3: ONLINE SEARCH RESULTS EXPANDED CONTAINER -->
+    <div class="hidden mt-3 max-h-56 overflow-y-auto custom-scroll space-y-2 p-2.5 rounded-2xl bg-noir-950/95 border-2 border-noir-gold/60 shadow-2xl backdrop-blur-md" id="online-results-container">
+      <div class="text-center py-4 font-mono text-xs text-noir-aged italic" id="online-empty-hint">
+        ✦ Query any track or artist in the worldwide archive. High-fidelity 30-second audio previews will be retrieved for connectome audition.
       </div>
     </div>
+  </div>
 
     <!-- PROMINENT DIRECT LEADERBOARD TOGGLE -->
     <div class="mt-3 flex flex-col items-center justify-center">
@@ -804,17 +798,23 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     // DOM Elements
+    const unifiedConsolePane = document.getElementById('unified-console-pane');
+    const unifiedTypebar = document.getElementById('unified-typebar');
+    const typebarIcon = document.getElementById('typebar-icon');
+    const typebarUploadSlot = document.getElementById('typebar-upload-slot');
     const fileInput = document.getElementById('audio-file-input');
-    const uploadPane = document.getElementById('upload-pane');
-    const onlinePane = document.getElementById('online-pane');
-    const tabBtnUpload = document.getElementById('tab-btn-upload');
-    const tabBtnOnline = document.getElementById('tab-btn-online');
     const chatBarPlaceholder = document.getElementById('chat-bar-placeholder');
-
     const onlineSearchInput = document.getElementById('online-search-input');
-    const btnOnlineSearch = document.getElementById('btn-online-search');
+    const typebarActionBtn = document.getElementById('typebar-action-btn');
+    const typebarActionIcon = document.getElementById('typebar-action-icon');
+
+    const uploadQuickDemos = document.getElementById('upload-quick-demos');
+    const onlineSuggestionChips = document.getElementById('online-suggestion-chips');
     const onlineResultsContainer = document.getElementById('online-results-container');
     const searchTags = document.querySelectorAll('.search-tag');
+
+    const tabBtnUpload = document.getElementById('tab-btn-upload');
+    const tabBtnOnline = document.getElementById('tab-btn-online');
 
     const presetDaft = document.getElementById('preset-daft');
     const presetDiscord = document.getElementById('preset-discord');
@@ -918,24 +918,47 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // SOURCE TAB SWITCHING
-    tabBtnUpload.addEventListener('click', () => {
-      tabBtnUpload.classList.add('border-noir-gold', 'bg-noir-900', 'text-noir-gold', 'font-bold');
-      tabBtnUpload.classList.remove('border-noir-700', 'bg-noir-950', 'text-noir-aged');
-      tabBtnOnline.classList.remove('border-noir-gold', 'bg-noir-900', 'text-noir-gold', 'font-bold');
-      tabBtnOnline.classList.add('border-noir-700', 'bg-noir-950', 'text-noir-aged');
-      uploadPane.classList.remove('hidden');
-      onlinePane.classList.add('hidden');
-    });
+    // SOURCE MODE SWITCHING (UNIFIED TYPEBAR)
+    let currentSourceMode = 'upload'; // 'upload' | 'online'
 
-    tabBtnOnline.addEventListener('click', () => {
-      tabBtnOnline.classList.add('border-noir-gold', 'bg-noir-900', 'text-noir-gold', 'font-bold');
-      tabBtnOnline.classList.remove('border-noir-700', 'bg-noir-950', 'text-noir-aged');
-      tabBtnUpload.classList.remove('border-noir-gold', 'bg-noir-900', 'text-noir-gold', 'font-bold');
-      tabBtnUpload.classList.add('border-noir-700', 'bg-noir-950', 'text-noir-aged');
-      onlinePane.classList.remove('hidden');
-      uploadPane.classList.add('hidden');
-    });
+    function setSourceMode(mode) {
+      currentSourceMode = mode;
+      if (mode === 'upload') {
+        tabBtnUpload.classList.add('border-noir-gold', 'bg-noir-900', 'text-noir-gold', 'font-bold');
+        tabBtnUpload.classList.remove('border-noir-700', 'bg-noir-950', 'text-noir-aged');
+        tabBtnOnline.classList.remove('border-noir-gold', 'bg-noir-900', 'text-noir-gold', 'font-bold');
+        tabBtnOnline.classList.add('border-noir-700', 'bg-noir-950', 'text-noir-aged');
+
+        typebarIcon.textContent = 'mic';
+        typebarUploadSlot.classList.remove('hidden');
+        onlineSearchInput.classList.add('hidden');
+        typebarActionIcon.textContent = 'arrow_upward';
+        typebarActionBtn.title = 'Upload Audio File';
+        uploadQuickDemos.classList.remove('hidden');
+        onlineSuggestionChips.classList.add('hidden');
+        onlineResultsContainer.classList.add('hidden');
+      } else {
+        tabBtnOnline.classList.add('border-noir-gold', 'bg-noir-900', 'text-noir-gold', 'font-bold');
+        tabBtnOnline.classList.remove('border-noir-700', 'bg-noir-950', 'text-noir-aged');
+        tabBtnUpload.classList.remove('border-noir-gold', 'bg-noir-900', 'text-noir-gold', 'font-bold');
+        tabBtnUpload.classList.add('border-noir-700', 'bg-noir-950', 'text-noir-aged');
+
+        typebarIcon.textContent = 'search';
+        typebarUploadSlot.classList.add('hidden');
+        onlineSearchInput.classList.remove('hidden');
+        onlineSearchInput.focus();
+        typebarActionIcon.textContent = 'search';
+        typebarActionBtn.title = 'Search Online Archives';
+        uploadQuickDemos.classList.add('hidden');
+        onlineSuggestionChips.classList.remove('hidden');
+        if (onlineResultsContainer.querySelectorAll('.btn-audit-online').length > 0) {
+          onlineResultsContainer.classList.remove('hidden');
+        }
+      }
+    }
+
+    tabBtnUpload.addEventListener('click', () => setSourceMode('upload'));
+    tabBtnOnline.addEventListener('click', () => setSourceMode('online'));
 
     // SHOW TOAST
     function showToast(msg) {
@@ -966,27 +989,33 @@ window.addEventListener('DOMContentLoaded', () => {
       metricsDashboard.classList.add('translate-y-full');
 
       // Reset hero frame zoom and effects
-      heroFrameContainer.classList.remove('scale-[1.05]', 'film-flash');
+      heroFrameContainer.classList.remove('scale-[1.03]', 'scale-[1.05]', 'film-flash');
       filmReelTitle.textContent = "REEL #34-DROSOPHILA-SYNC";
 
-      // Reset video viewport
-      viewVideoPlayer.classList.add('opacity-0', 'pointer-events-none');
+      // Reset video viewport & pause video
+      viewVideoPlayer.style.setProperty('display', 'none', 'important');
+      viewVideoPlayer.classList.add('opacity-0', 'pointer-events-none', 'hidden');
       viewVideoPlayer.classList.remove('opacity-100');
       flyVideo.pause();
-      flyVideo.currentTime = 0;
+      flyVideo.onended = null;
+      flyVideo.onplaying = null;
+      flyVideo.removeAttribute('src');
+      flyVideo.load();
       flyVideo.classList.add('hidden');
       reactionFilmImg.classList.remove('hidden');
       videoProgressBar.style.width = '0%';
-      filmTimer.textContent = '00:00 / 00:03';
+      filmTimer.textContent = '00:00 / 00:10';
 
       // Restore idle hero picture
       heroFlyImg.src = IMG_HERO_IDLE;
+      viewHeroImage.style.display = '';
       viewHeroImage.classList.remove('opacity-0', 'hidden');
       viewHeroImage.classList.add('opacity-100');
       heroAuditStatus.textContent = "AUDIT STATE: IDLE / WAITING FOR TUNE";
 
-      // Hide reveal popup
-      revealPopup.classList.add('opacity-0', 'scale-90', 'pointer-events-none');
+      // Completely hide reveal popup modal
+      revealPopup.style.setProperty('display', 'none', 'important');
+      revealPopup.classList.add('opacity-0', 'scale-90', 'pointer-events-none', 'hidden');
       revealPopup.classList.remove('opacity-100', 'scale-100');
 
       // Hide and reset loading card
@@ -995,10 +1024,11 @@ window.addEventListener('DOMContentLoaded', () => {
       loadingPercentage.textContent = '0%';
       loadingStepText.textContent = "1. Converting Audio Stream...";
 
-      // Restore input bars
+      // Restore unified typebar console
       chatBarPlaceholder.textContent = "Drag & drop audio file or click to upload (.mp3, .wav, .m4a)...";
       fileInput.value = '';
-      uploadPane.classList.remove('hidden', 'opacity-0', 'scale-95');
+      unifiedConsolePane.classList.remove('hidden', 'opacity-0', 'scale-95');
+      setSourceMode(currentSourceMode);
 
       if (showResetToast) {
         showToast("PREVIOUS AUDIT ARCHIVED • RECEPTORS ZEROED");
@@ -1019,11 +1049,10 @@ window.addEventListener('DOMContentLoaded', () => {
       heroAuditStatus.textContent = "AUDIT STATE: SCANNING MECHANORECEPTORS...";
       if (scanModeLabel) scanModeLabel.textContent = `JO-AB CIRCUIT TRACKING [${mode.toUpperCase()}]`;
 
-      // Hide input bars, show loading card
-      uploadPane.classList.add('opacity-0', 'scale-95');
+      // Hide unified typebar console, show loading card
+      unifiedConsolePane.classList.add('opacity-0', 'scale-95');
       setTimeout(() => {
-        uploadPane.classList.add('hidden');
-        onlinePane.classList.add('hidden');
+        unifiedConsolePane.classList.add('hidden');
         loadingCard.classList.remove('hidden');
         void loadingCard.offsetWidth;
         loadingCard.classList.remove('opacity-0', 'translate-y-3');
@@ -1066,6 +1095,7 @@ window.addEventListener('DOMContentLoaded', () => {
               setTimeout(() => {
                 loadingCard.classList.add('hidden');
                 // Show reveal popup modal
+                revealPopup.style.setProperty('display', 'flex', 'important');
                 revealPopup.classList.remove('pointer-events-none', 'opacity-0', 'scale-90', 'hidden');
                 revealPopup.classList.add('opacity-100', 'scale-100');
               }, 300);
@@ -1095,6 +1125,7 @@ window.addEventListener('DOMContentLoaded', () => {
             };
             recordAuditToLeaderboard(evalData);
             loadingCard.classList.add('hidden');
+            revealPopup.style.setProperty('display', 'flex', 'important');
             revealPopup.classList.remove('pointer-events-none', 'opacity-0', 'scale-90', 'hidden');
             revealPopup.classList.add('opacity-100', 'scale-100');
           }, 600);
@@ -1104,11 +1135,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // CLICK "SEE RESULTS" -> PLAY FILM / MP4 -> ONLY SLIDE UP SCORECARD AFTER VIDEO ENDS
     btnSeeResults.addEventListener('click', () => {
-      // 1. Completely dismiss reveal popup modal
+      // 1. Immediately disappear the reveal popup modal completely
+      revealPopup.style.setProperty('display', 'none', 'important');
       revealPopup.classList.add('opacity-0', 'scale-90', 'pointer-events-none', 'hidden');
       revealPopup.classList.remove('opacity-100', 'scale-100');
 
       // 2. Hide idle hero image completely
+      viewHeroImage.style.setProperty('display', 'none', 'important');
       viewHeroImage.classList.add('opacity-0', 'hidden');
       viewHeroImage.classList.remove('opacity-100');
 
@@ -1132,15 +1165,20 @@ window.addEventListener('DOMContentLoaded', () => {
       }
 
       // 4. Reveal video player container
+      viewVideoPlayer.style.setProperty('display', 'flex', 'important');
       viewVideoPlayer.classList.remove('pointer-events-none', 'opacity-0', 'hidden');
       viewVideoPlayer.classList.add('opacity-100');
 
       // 5. Setup and play MP4 video
       const videoSrc = isGood ? "/static/fly_good.mp4" : "/static/fly_bad.mp4";
+      flyVideo.pause();
+      flyVideo.onended = null;
+      flyVideo.onplaying = null;
+      flyVideo.ontimeupdate = null;
       flyVideo.src = videoSrc;
+      flyVideo.load();
       flyVideo.classList.remove('hidden');
       reactionFilmImg.classList.add('hidden');
-      flyVideo.currentTime = 0;
       flyVideo.muted = false; // User clicked a button, so unmuted audio is allowed
 
       videoProgressBar.style.width = '0%';
@@ -1178,7 +1216,10 @@ window.addEventListener('DOMContentLoaded', () => {
       };
 
       // CRITICAL: Report ONLY appears after video clip ends!
-      flyVideo.onended = handleVideoClipEnd;
+      // Wire onended strictly inside onplaying so previous state never fires early!
+      flyVideo.onplaying = () => {
+        flyVideo.onended = handleVideoClipEnd;
+      };
 
       // Skip button allows user to jump directly to report if they don't want to wait
       const btnSkipVideo = document.getElementById('btn-skip-video');
@@ -1318,23 +1359,44 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // DRAG AND DROP HANDLING
-    const dropLabel = uploadPane.querySelector('label');
+    // UNIFIED TYPEBAR INTERACTIONS
+    typebarActionBtn.addEventListener('click', () => {
+      if (currentSourceMode === 'upload') {
+        fileInput.click();
+      } else {
+        searchOnlineSongs(onlineSearchInput.value);
+      }
+    });
+
+    typebarUploadSlot.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    typebarIcon.addEventListener('click', () => {
+      if (currentSourceMode === 'upload') {
+        fileInput.click();
+      } else {
+        onlineSearchInput.focus();
+      }
+    });
+
+    // DRAG AND DROP HANDLING ON UNIFIED TYPEBAR
     ['dragenter', 'dragover'].forEach(name => {
-      dropLabel.addEventListener(name, (e) => {
+      unifiedTypebar.addEventListener(name, (e) => {
         e.preventDefault();
-        dropLabel.classList.add('border-noir-gold', 'scale-[1.01]');
+        unifiedTypebar.classList.add('border-noir-gold', 'scale-[1.01]');
       });
     });
     ['dragleave', 'drop'].forEach(name => {
-      dropLabel.addEventListener(name, (e) => {
+      unifiedTypebar.addEventListener(name, (e) => {
         e.preventDefault();
-        dropLabel.classList.remove('border-noir-gold', 'scale-[1.01]');
+        unifiedTypebar.classList.remove('border-noir-gold', 'scale-[1.01]');
       });
     });
-    dropLabel.addEventListener('drop', async (e) => {
+    unifiedTypebar.addEventListener('drop', async (e) => {
       if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
         const file = e.dataTransfer.files[0];
+        setSourceMode('upload');
         resetToPristine(false);
         showToast("AUDIO SPECIMEN DROPPED • COMMENCING BIO-SCAN");
 
@@ -1389,6 +1451,7 @@ window.addEventListener('DOMContentLoaded', () => {
     // ONLINE SONG SEARCH
     async function searchOnlineSongs(query) {
       if (!query || !query.trim()) return;
+      onlineResultsContainer.classList.remove('hidden');
       onlineResultsContainer.innerHTML = `
         <div class="text-center py-6 font-mono text-xs text-noir-gold animate-pulse">
           <span class="inline-block w-2.5 h-2.5 rounded-full bg-noir-gold animate-ping mr-2"></span>
@@ -1409,10 +1472,6 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    btnOnlineSearch.addEventListener('click', () => {
-      searchOnlineSongs(onlineSearchInput.value);
-    });
-
     onlineSearchInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         searchOnlineSongs(onlineSearchInput.value);
@@ -1423,6 +1482,7 @@ window.addEventListener('DOMContentLoaded', () => {
       tag.addEventListener('click', () => {
         const q = tag.getAttribute('data-query');
         onlineSearchInput.value = q;
+        setSourceMode('online');
         searchOnlineSongs(q);
       });
     });
@@ -1726,8 +1786,9 @@ window.addEventListener('DOMContentLoaded', () => {
           resetToPristine(false);
           showToast(`AUDITING ARCHIVED TRACK: "${songTitle}"`);
           setTimeout(() => {
+            setSourceMode('online');
+            onlineSearchInput.value = songTitle;
             searchOnlineSongs(songTitle);
-            tabBtnOnline.click();
           }, 300);
         });
       });

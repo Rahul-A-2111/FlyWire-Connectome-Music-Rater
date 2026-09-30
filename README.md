@@ -1,88 +1,180 @@
-# Fly-Delity: 1930s Rubber Hose Noir Connectome Music Rater
+<div align="center">
 
-A connectome-based music rating application that evaluates audio using a simplified *Drosophila melanogaster* auditory circuit and Leaky Integrate-and-Fire (LIF) simulation, wrapped in an authentic 1930s Rubber Hose Noir aesthetic.
+![Fly-Delity Header Banner](static/readme_banner.svg)
 
-The application evaluates songs through simulated Johnston's Organ mechanoreceptors, measuring acoustic resonance, pulse timing (IPI), harmonicity (HNR), and downstream activations across courtship (P1/pIP10), territorial, and threat/escape (LC4/Giant Fiber) neural pathways.
+# 🪰 Fly-Delity: 1930s Rubber Hose Noir Connectome Music Rater
 
----
+[![Connectome](https://img.shields.io/badge/Connectome-FlyWire%20FAFB-0284c7?style=for-the-badge&logoColor=white)](https://flywire.ai/)
+[![Aesthetic](https://img.shields.io/badge/Aesthetic-1930s%20Rubber%20Hose%20Noir-dc2626?style=for-the-badge&logoColor=white)](https://github.com/Rahul-A-2111/FlyWire-Connectome-Music-Rater)
+[![Status](https://img.shields.io/badge/Ledger-Real--Time%20Dispatch-ffffff?style=for-the-badge&labelColor=0f172a&color=2563eb)](https://github.com/Rahul-A-2111/FlyWire-Connectome-Music-Rater)
+[![Circuit](https://img.shields.io/badge/Auditory-Johnston's%20Organ-0284c7?style=for-the-badge&logoColor=white)](https://github.com/Rahul-A-2111/FlyWire-Connectome-Music-Rater)
+[![Escape](https://img.shields.io/badge/Threat%20Panic-LC4%20Giant%20Fiber-dc2626?style=for-the-badge&logoColor=white)](https://github.com/Rahul-A-2111/FlyWire-Connectome-Music-Rater)
+[![Platform](https://img.shields.io/badge/Platform-Python%20Flask-ffffff?style=for-the-badge&labelColor=1e293b&color=dc2626)](https://github.com/Rahul-A-2111/FlyWire-Connectome-Music-Rater)
 
-## Key Features
-
-- **Connectome Hall of Acclaim (Real-Time Leaderboard System)**:
-  - Persistent server-backed leaderboard (`leaderboard.json`) tracking audited specimens.
-  - **Instant Real-Time Sync**: Audited tracks are immediately logged in memory and synced to the backend without requiring a page refresh.
-  - **Visual Audit Highlights**: Newly audited tracks are styled with a shimmering gold border and an animated `★ JUST AUDITED` badge.
-  - **Live Dispatch Feed**: An automatic synapse feed banner (`⚡ LIVE AUDIT LOG // REAL-TIME DISPATCH`) dynamically displays the latest audited tracks across categories.
-  - Category filtration tabs:
-    - `All Categories`: Comprehensive chronological audit register with live dispatch.
-    - `★ All-Time Affinity`: High-scoring auditory masterpieces ($\ge 75$).
-    - `♫ Courtship Harmonics`: Songs evaluated under Courtship mode.
-    - `⚡ Johnston's Vibration`: Songs evaluated under Territorial mode.
-    - `☾ Nocturnal Slumber`: Songs evaluated under Quiet / Sleep mode.
-    - `⚠ Dreadful Swatter Triggers`: Low-scoring or chaotic din inducing LC4 escape panic ($< 55$).
-    - `🕒 Recent Audits`: Quick chronological filter for the latest specimens.
-  - Interactive entries: Click any ledger item to instantly queue and re-audit it in the screening booth.
-  - Direct ledger shortcut: A dedicated `★ VIEW ON LEADERBOARD ➔` button on the final scorecard smoothly scrolls down to inspect your track's ledger entry.
-
-- **Online Song Lookup & Instant Preview Auditing**:
-  - Global music archive search powered by the public iTunes Search API.
-  - No API key required; search any artist, jazz standard, classical composition, or contemporary track.
-  - In-browser 30-second audio preview player (`▶ Preview`) to audition before rating.
-  - 1-Click connectome evaluation: Automatically downloads, converts to 16 kHz mono WAV via FFmpeg, and streams through the neural simulator.
-
-- **15 Customized Verdicts (3 Modes $\times$ 5 Score Tiers)**:
-  - Custom rank badges, verdict headlines, and vintage critic commentary from *Lord Drosophila, Esq.*:
-    - **Courtship Mode**: From *True Romantic Sync* (180 Hz wing extension) down to *Swatter Divorce* (courtship paralysis).
-    - **Territorial Mode**: From *Apex Warrior Thorax Shock* (dominion over the banana throne) down to *Routed Retreat* (Giant Fiber panic).
-    - **Quiet / Sleep Mode**: From *Velvet Lullaby* (circadian tranquility) down to *Nightmare Siren* (violent awakening).
-  - Score Tiers:
-    - Tier 1: 85.0 – 100.0 (Rank S+)
-    - Tier 2: 70.0 – 84.9 (Rank A)
-    - Tier 3: 50.0 – 69.9 (Rank B)
-    - Tier 4: 30.0 – 49.9 (Rank C)
-    - Tier 5: 0.0 – 29.9 (Rank F)
-
-- **Mode Locking During Bio-Scan**:
-  - Behavioral mode selection is automatically locked and disabled during audio evaluation with a visual warning badge to prevent state corruption during active neural simulation.
-
-- **1930s Film Screening Experience & Video Synchronization**:
-  - Authentic 1930s film grain vignette, projector flicker, and rubber hose bobbing animations.
-  - **Front-and-Center Video Playback**: Clicking **SEE RESULTS** dismisses the preliminary popup and centers the film viewport into direct sight.
-  - **Full Reel Theatrical Timing**: The custom MP4 reaction cartoon (`fly_good.mp4` / `fly_bad.mp4`) plays in its entirety. The comprehensive 5-gauge scorecard **only slides up after the video clip ends**, preserving the comedic punchline.
-  - **Scrubber & Skip Control**: Features an optical soundtrack progress bar, live timecode, and a `SKIP TO REPORT ➔` button for immediate report access when desired.
-  - Fallback animated silent reel with projector flicker if MP4 decoding is unsupported in the client browser.
+<p align="center">
+  <b>A real connectome neural simulation where a 1930s cartoon fruit fly rates your music.</b><br/>
+  Powered by the complete FlyWire <i>Drosophila melanogaster</i> brain map and Leaky Integrate-and-Fire (LIF) network modeling.
+</p>
 
 ---
 
-## Project Layout
+</div>
 
-- `app.py`: Flask web application, SSE streaming pipeline, search endpoints, and leaderboard handlers.
-- `judge_engine.py`: Audio feature extraction, LIF connectome simulation, 3-mode scoring, and 15-tier verdict generator.
-- `audio_utils.py`: Audio-to-current conversion (JON-A/B vs JON-C/E channels), IPI sync, HNR, and dynamic tempo analysis.
-- `cave.py`: FlyWire data loading, signed synaptic connectivity matrix, and sparse LIF network.
-- `leaderboard.json`: Persistent ledger database storing archived and user-audited tracks.
-- `jon_synapses.csv`: Cached FlyWire synapse dataset.
-- `neuron_annotations.csv`: Cached neuron cell-type annotations.
-- `static/`: Frontend visual and audio assets (`fly_hero.png`, `fly_good.mp4`, `fly_bad.mp4`, `daft_demo.wav`, `screech_demo.wav`).
-- `uploads/`: Temporary audio buffer for uploaded or online-fetched tracks.
+## 📖 Overview
+
+> [!NOTE]
+> **What is Fly-Delity?**  
+> Fly-Delity is an interactive sound rater. It simulates how a fruit fly hears and reacts to human songs. The application uses authentic synaptic wiring data from the **FlyWire Connectome Project**. Everything is wrapped in a 1930s vintage film reel aesthetic hosted by our gentleman critic, **Lord Drosophila, Esq.**
+
+In nature, fruit flies communicate through delicate wing vibrations called courtship songs. Their antennal ears (known as **Johnston's Organ**) contain tiny mechanoreceptor neurons that detect acoustic frequencies and pulse rhythms. 
+
+When you play a song, Fly-Delity converts the audio waveform into synaptic current. It streams these currents through thousands of simulated neurons in real time. The fly's brain then decides if your music is a romantic masterpiece, a battle rhythm, or chaotic noise that triggers its emergency escape reflexes.
 
 ---
 
-## Environment Setup
+## 🎨 White, Blue & Red Neural Modes
 
-The project uses the virtual environment located at:
+The fly brain evaluates audio under three distinct behavioral mindsets:
+
+| Mode | Circuit Accent | Target Frequencies | Behavioral Goal |
+| :--- | :---: | :--- | :--- |
+| 🔵 **Courtship Mode** | **Royal Blue** | 120–160 BPM pulse rhythms, 180 Hz sine hums | The fly seeks romance. Activates P1/pIP10 wing extension command circuits. |
+| 🔴 **Territorial Mode** | **Crimson Red** | Heavy transients, fast tempo strikes, percussive force | The fly defends its fruit platter. Stimulates fight-or-flight thoracic motor units. |
+| ⚪ **Quiet / Sleep Mode** | **Crisp White** | Low decibels, gentle harmonics, tranquil ambient drift | The fly rests. Sudden loud noises trigger violent awakening and night-terror panic. |
+
+> [!IMPORTANT]
+> **Mode Locking During Bio-Scan**:  
+> Once an audio scan begins, the behavioral mode selector is locked with a glowing indicator badge. This prevents network state corruption while the LIF simulation is running.
+
+---
+
+## ⚡ Core Features
+
+### 1. 🎛️ Unified Typebar Console
+- **Single Seamless Bar**: You do not have to jump between different UI boxes. Both local file uploads and online archive searches share the exact same pill-shaped typebar console.
+- **Dynamic Prompt Switch**:
+  - In **Upload Mode**: The bar prompts `Drag & drop audio file or click to upload (.mp3, .wav, .m4a)...` with a microphone icon and an upload arrow.
+  - In **Online Search Mode**: The prompt smoothly becomes an active search input: `Enter artist or song name to search online archives (e.g. Daft Punk, Queen)...` with a magnifying glass.
+- **Quick Controls**:
+  - Quick demo buttons for instant testing (*Daft Punk* or *Discordant Screech*).
+  - Fast suggestion chips for famous jazz, classical, and electronic legends (*Cab Calloway*, *Duke Ellington*, *Miles Davis*, *Queen*).
+
+---
+
+### 2. 🎬 Theatrical Video Reaction & Scorecard Synchronization
+- **Immediate Disappearance of Popups**: When you click **SEE RESULTS**, the preliminary modal box disappears instantly (`display: none`). It will never block or play behind your view.
+- **Projector Viewport Centering**: The 1930s film reel smoothly scrolls right to the center of your screen.
+- **Full Video Experience**: The custom cartoon reaction video (`fly_good.mp4` or `fly_bad.mp4`) plays with full sound front-and-center.
+- **Event-Driven Slide-Up**: The 5-gauge neural scorecard **only slides up after the video clip finishes playing**. The comedic punchline is never cut short.
+- **Skip Control**: A dedicated `SKIP TO REPORT ➔` button is available if you want to inspect the numbers right away.
+
+---
+
+### 3. 🏆 Real-Time Connectome Hall of Acclaim (Leaderboard)
+- **Instant Live Dispatch**: Audited songs are immediately added to the top of the leaderboard in real time without refreshing the page.
+- **Live Audit Feed Banner**: In the *All Categories* view, a live stream banner (`⚡ LIVE AUDIT LOG // REAL-TIME DISPATCH`) dynamically highlights the latest specimens.
+- **Glow Highlights**: Your newly rated track is styled with a glowing gold border and an animated `★ JUST AUDITED` badge.
+- **Direct Scorecard Jump**: Click `★ VIEW ON LEADERBOARD ➔` on the scorecard to glide straight down to your track's entry in the ledger.
+- **Category Filters**:
+  - 🔵 `★ All-Time Affinity`: High-scoring dipteran auditory gems ($\ge 75$).
+  - 🔵 `♫ Courtship Harmonics`: Tracks certified under Courtship mode.
+  - 🔴 `⚡ Johnston's Vibration`: Battle tracks evaluated under Territorial mode.
+  - ⚪ `☾ Nocturnal Slumber`: Peaceful bedtime tracks evaluated under Sleep mode.
+  - 🔴 `⚠ Dreadful Swatter Triggers`: Disastrous cacophony that triggers fly panic ($< 55$).
+  - 🕒 `Recent Audits`: Fast chronological filter for the latest entries.
+
+---
+
+### 4. 🌐 Online Global Song Search & Preview
+- **Millions of Songs**: Search any track or artist using the public iTunes Search API. No API key required.
+- **30-Second Preview Player**: Audition any song with the built-in vintage preview player before running a bio-scan.
+- **1-Click Audit**: Click `AUDIT ➔` to download, convert to a 16 kHz mono WAV file via FFmpeg, and stream directly into the connectome simulator.
+
+---
+
+## 🏆 15 Customized Verdicts (3 Modes × 5 Tiers)
+
+Every audit receives a custom rank badge, verdict headline, and critical commentary written in vintage 1930s prose:
+
+| Score Tier | Rank Badge | Courtship Mode 🔵 | Territorial Mode 🔴 | Quiet / Sleep Mode ⚪ |
+| :---: | :---: | :--- | :--- | :--- |
+| **85.0 – 100.0** | **Rank S+** | 🔵 **True Romantic Sync**<br/>Single wing extended at 180 Hz with unbridled romance. | 🔴 **Apex Warrior Shock**<br/>Dominion over the rotting banana throne is secured. | ⚪ **Velvet Lullaby**<br/>Total circadian tranquility; sweet dreams in the sugar dish. |
+| **70.0 – 84.9** | **Rank A** | 🔵 **Enchanted Flutter**<br/>Handsome serenade; polite abdominal waggle granted. | 🔴 **Aggressive Spar**<br/>Rival flies retreat across the perimeter in respect. | ⚪ **Gentle Slumber**<br/>Peaceful dreamland; dorsal vessel pulses rhythmically. |
+| **50.0 – 69.9** | **Rank B** | ⚪ **Lukewarm Hover**<br/>Suitor stumbles like a tipsy gentleman in a speakeasy. | ⚪ **Mild Skirmish**<br/>Cautious standoff; neither fruit won nor honor lost. | ⚪ **Restless Twitch**<br/>Tarsal claw twitching; light slumber disturbed. |
+| **30.0 – 49.9** | **Rank C** | 🔴 **Discordant Rejection**<br/>Erratic frequency clashes; antenna grooming in horror. | 🔴 **Territory Surrendered**<br/>Feeble meekness; chased off the fruit platter without a fight. | 🔴 **Rude Awakening**<br/>Cacophony triggers a groggy fall from the hammock. |
+| **0.0 – 29.9** | **Rank F** | 🔴 **Swatter Divorce**<br/>Acute courtship paralysis; bring the swatter and end it. | 🔴 **Routed Retreat**<br/>Giant Fiber panic; flying backward directly into a wall. | 🔴 **Nightmare Siren**<br/>Violent awakening terror; launched out of hammock in agony. |
+
+---
+
+## 🔬 How the Connectome Biology Works
+
+```
+   [ Audio Waveform (.mp3 / .wav) ]
+                  │
+                  ▼
+  [ Johnston's Organ Mechanoreceptors ]
+         ├── JO-A/B: High-frequency sensitive (120 - 250 Hz Sine)
+         └── JO-C/E: Low-frequency / transient vibration sensitive
+                  │
+                  ▼
+   [ Leaky Integrate-and-Fire Network ]
+         ├── Signed Synapses (AMPA / GABA / Acetylcholine)
+         ├── P1 & pIP10: Male Courtship Command Neurons
+         └── LC4 & Giant Fiber: Visual / Acoustic Escape Neurons
+                  │
+                  ▼
+     [ 5 Real-Time Telemetry Gauges ]
+         1. 🔵 JO-AB Resonance (% harmonic lock)
+         2. 🔵 Courtship Pulse (% wing extension sync)
+         3. 🔴 Flight Motor Stim. (% thoracic vibration burst)
+         4. 🔴 Swatter Threat (% LC4 giant fiber escape trigger)
+         5. ⚪ Dopamine Surge (Mushroom body reward multiplier)
+```
+
+> [!CAUTION]
+> **Swatter Hazard Alert**:  
+> Harsh screeches and erratic noise over-stimulate the Giant Fiber interneurons. When the Swatter Escape gauge exceeds **50%**, the fly panics, rejects the track, and triggers the `fly_bad.mp4` reaction reel!
+
+---
+
+## 📂 Project Structure
 
 ```text
-C:\Users\rahul_o2332zg\flywire_env
+flywire-song-project/
+├── app.py                     # Flask web app, SSE stream pipeline, search & leaderboard APIs
+├── judge_engine.py            # Connectome simulation, 3-mode scoring, and 15 verdict engines
+├── audio_utils.py             # Audio-to-current conversion, IPI pulse sync, and tempo analysis
+├── cave.py                    # FlyWire synapse matrices and LIF neural network simulator
+├── leaderboard.json           # Persistent JSON storage for all certified audit specimens
+├── jon_synapses.csv           # Cached FlyWire synapse data
+├── neuron_annotations.csv     # Cached FlyWire cell-type annotations
+├── static/
+│   ├── readme_banner.svg      # White, Blue, and Red 1930s Noir header banner
+│   ├── fly_hero.png           # Idle Lord Drosophila portrait under the spotlight
+│   ├── fly_good.mp4           # 10s vintage cartoon reaction: fly grooving on tempo
+│   ├── fly_bad.mp4            # 15s vintage cartoon reaction: fly in agony from bad music
+│   ├── daft_demo.wav          # Clean 128 BPM electronic courtship preset
+│   └── screech_demo.wav       # Harsh discordant swatter hazard preset
+└── uploads/                   # Temporary buffer for audio processing
 ```
 
-Activate in PowerShell:
+---
+
+## 🚀 Setup & Installation
+
+### 1. Prerequisites
+- **Python 3.10+**
+- **FFmpeg** installed and accessible on your system PATH (required for audio conversion).
+
+### 2. Activate Your Environment
+If you are using the virtual environment:
 
 ```powershell
-..\flywire_env\Scripts\Activate.ps1
+# In PowerShell:
+C:\Users\rahul_o2332zg\flywire_env\Scripts\Activate.ps1
 ```
 
-If dependencies need to be installed:
+Or install requirements in your environment:
 
 ```powershell
 python -m pip install flask flask-cors caveclient librosa numpy scipy soundfile pandas
@@ -94,19 +186,39 @@ Verify CAVEclient:
 python -c "import caveclient; print(caveclient.__version__)"
 ```
 
-Ensure FFmpeg is available on your system PATH for audio conversion.
+---
+
+## 🎮 How to Run the App
+
+1. **Start the local server**:
+   ```powershell
+   python app.py
+   ```
+
+2. **Open your browser**:
+   Navigate to [http://localhost:5000](http://localhost:5000).
+
+3. **Choose a Behavioral Mode**:
+   Select **♫ Courtship**, **⚡ Territorial**, or **☾ Quiet / Sleep**.
+
+4. **Pick Your Music**:
+   - **Upload Mode**: Drop an audio file onto the typebar console or click a Quick Demo.
+   - **Search Mode**: Click `🌐 Search Archives Online` and type an artist or track name directly in the same bar.
+
+5. **Step Into the Screening Booth**:
+   - Watch the live mechanoreceptor scan.
+   - When finished, click the **SEE RESULTS ➔** button.
+   - The popup vanishes instantly, the film centers on screen, and the reaction cartoon plays.
+
+6. **Review Your Verdict & Leaderboard**:
+   - After the video clip ends, your 5-gauge scorecard slides up.
+   - Click `★ VIEW ON LEADERBOARD ➔` to see your track ranked and glowing in real time!
 
 ---
 
-## Run the Web Application
+<div align="center">
 
-```powershell
-python app.py
-```
+**Drosophila Biosonic Sound Laboratories • Circa 1934**  
+*Certified by Lord Drosophila, Esq. // 139,255 Synapses Audited*
 
-Open the local server URL (e.g. `http://localhost:5000`):
-1. Choose a behavioral mode: **Courtship**, **Territorial**, or **Quiet / Sleep**.
-2. Select your audio via **Local File Upload** (`.mp3`, `.wav`, `.m4a`), **Online Song Search**, or **Quick Demos**.
-3. Watch the real-time connectome mechanoreceptor scan and click **SEE RESULTS** to enter the screening booth.
-4. Watch the full synchronized 1930s reaction cartoon (`fly_good.mp4` / `fly_bad.mp4`), after which your 5-gauge neural scorecard automatically slides up (or click `SKIP TO REPORT ➔`).
-5. Review your critic commentary and click `★ VIEW ON LEADERBOARD ➔` to see your track instantly registered and highlighted in real-time in the **Connectome Hall of Acclaim**.
+</div>
