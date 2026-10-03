@@ -369,376 +369,36 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     }
 
     /* ========================================================
-       CHANGE 3C — INVERTED 1930s NOIR ARCHIVE PALETTE
+       BUTTON-LEVEL HOVER COLOR INVERSION
+       Inverts foreground/background/accent ONLY on hover for
+       "CHOOSE NEW SONG FOR RATING" and "VIEW ON LEADERBOARD".
+       Smooth transition restores default appearance on mouseleave.
        ======================================================== */
-    /* ========================================================
-       CHANGE 3C — INVERTED 1930s NOIR ARCHIVE PALETTE
-       ======================================================== */
-    body.theme-inverted {
-      background-color: #f5eee3 !important;
-      color: #070b14 !important;
-      --bg-pattern-base: #f5eee3;
-      --bg-pattern-accent: rgba(160, 120, 30, 0.18);
-      --btn-glow-inner: rgba(168, 128, 26, 0.3);
-      --btn-glow-outer: rgba(168, 128, 26, 0.12);
-      --btn-hover-glow-inner: rgba(168, 128, 26, 0.5);
-      --btn-hover-glow-outer: rgba(168, 128, 26, 0.25);
-      --btn-sweep-color: rgba(191, 160, 84, 0.4);
+    #btn-reset-app,
+    #btn-view-ledger {
+      transition: background 0.35s ease, background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, transform 0.2s ease !important;
     }
 
-    body.theme-inverted .film-vignette {
-      box-shadow: inset 0 0 130px rgba(180, 160, 130, 0.45), inset 0 0 220px rgba(140, 120, 90, 0.35) !important;
-    }
-
-    body.theme-inverted .spotlight-radial {
-      background: radial-gradient(ellipse at 50% 12%, rgba(168, 128, 26, 0.12) 0%, rgba(200, 190, 170, 0.08) 40%, transparent 75%) !important;
-    }
-
-    /* Reset dark gradient images on all containers so parchment colors take full effect */
-    body.theme-inverted [class*="bg-gradient-to-"],
-    body.theme-inverted .bg-gradient-to-b,
-    body.theme-inverted .bg-gradient-to-r,
-    body.theme-inverted .bg-gradient-to-br,
-    body.theme-inverted .bg-gradient-to-t {
+    #btn-reset-app:hover {
       background-image: none !important;
-    }
-
-    /* Base dark surface overrides */
-    body.theme-inverted .bg-noir-950,
-    body.theme-inverted .bg-noir-950\/95,
-    body.theme-inverted .bg-noir-950\/90,
-    body.theme-inverted .bg-noir-950\/85,
-    body.theme-inverted .bg-noir-950\/80 {
-      background-color: #faf6ee !important;
-    }
-
-    body.theme-inverted .bg-noir-900,
-    body.theme-inverted .bg-noir-900\/95,
-    body.theme-inverted .bg-noir-900\/90,
-    body.theme-inverted .bg-noir-900\/85,
-    body.theme-inverted .bg-noir-900\/80 {
-      background-color: #f5eee2 !important;
-    }
-
-    body.theme-inverted .bg-noir-850 {
-      background-color: #ebe0cf !important;
-    }
-
-    body.theme-inverted .bg-noir-800 {
-      background-color: #e0d4c0 !important;
-    }
-
-    /* Hero viewfinder casing in inverted theme */
-    body.theme-inverted #hero-frame-container > div {
-      background-image: linear-gradient(to bottom, #faf6ee, #f1e7d6, #e7dcba) !important;
-      background-color: #f1e7d6 !important;
-      border-color: #bfa054 !important;
-      box-shadow: 0 20px 45px rgba(110, 85, 40, 0.2) !important;
-    }
-
-    body.theme-inverted #hero-frame-container .bg-noir-700 {
-      background-color: #bfa054 !important;
-    }
-
-    body.theme-inverted #film-reel-title {
-      color: #8c6d17 !important;
-    }
-
-    body.theme-inverted #hero-subject-tag {
-      background-color: #ffffff !important;
+      background-color: #d4af37 !important;
       color: #070b14 !important;
-      border-color: #cbbea9 !important;
+      border-color: #070b14 !important;
+      box-shadow: 0 0 35px rgba(212, 175, 55, 0.85), inset 0 0 10px rgba(7, 11, 20, 0.25) !important;
     }
-
-    body.theme-inverted #hero-audit-status {
-      background-color: #ffffff !important;
-      color: #8c6d17 !important;
-      border-color: #cbbea9 !important;
-    }
-
-    body.theme-inverted #media-viewport {
-      background-color: #ede3d2 !important;
-      border-color: #bfa054 !important;
-    }
-
-    /* Leaderboard panels & category cards */
-    body.theme-inverted .category-card,
-    body.theme-inverted .leaderboard-panel {
-      background-image: linear-gradient(to bottom, #fcf9f2 0%, #f4eee2 100%) !important;
-      background-color: #f7f2e7 !important;
-      border-color: #cbbea9 !important;
-      box-shadow: 0 15px 35px rgba(100, 80, 40, 0.1) !important;
-    }
-
-    body.theme-inverted .category-card h3,
-    body.theme-inverted .leaderboard-panel h3 {
+    #btn-reset-app:hover span {
       color: #070b14 !important;
     }
 
-    body.theme-inverted .category-card p,
-    body.theme-inverted .leaderboard-panel p,
-    body.theme-inverted .category-card span:not([class*="text-rose"]):not([class*="text-emerald"]):not([class*="bg-amber"]) {
-      color: #3b4861 !important;
-    }
-
-    body.theme-inverted .category-card .border-noir-800 {
-      border-top-color: #ded3c0 !important;
-    }
-
-    /* Individual song items in inverted theme */
-    body.theme-inverted .song-item {
-      background-color: #faf6ee !important;
-      border-color: #ded3c0 !important;
+    #btn-view-ledger:hover {
+      background-image: none !important;
+      background-color: #f59e0b !important;
       color: #070b14 !important;
-      box-shadow: 0 2px 6px rgba(100, 80, 40, 0.05) !important;
+      border-color: #070b14 !important;
+      box-shadow: 0 0 35px rgba(245, 158, 11, 0.85), inset 0 0 10px rgba(7, 11, 20, 0.25) !important;
     }
-
-    body.theme-inverted .song-item:hover {
-      background-color: #ffffff !important;
-      border-color: #a8801a !important;
-      box-shadow: 0 16px 28px -6px rgba(120, 95, 45, 0.22), 0 0 14px rgba(168, 128, 26, 0.25) !important;
-    }
-
-    body.theme-inverted .song-item .font-playfair {
+    #btn-view-ledger:hover span {
       color: #070b14 !important;
-    }
-
-    body.theme-inverted .song-item .font-mono {
-      color: #4b5873 !important;
-    }
-
-    body.theme-inverted .highlight-recent-item {
-      background-color: #fff9ec !important;
-      border-color: #bfa054 !important;
-      box-shadow: 0 0 14px rgba(191, 160, 84, 0.25) !important;
-    }
-
-    /* Typography & Text overrides */
-    body.theme-inverted .text-noir-creme {
-      color: #070b14 !important;
-    }
-
-    body.theme-inverted .text-noir-sepia {
-      color: #1a2745 !important;
-    }
-
-    body.theme-inverted .text-noir-aged,
-    body.theme-inverted .text-noir-aged\/75,
-    body.theme-inverted .text-noir-aged\/70,
-    body.theme-inverted .text-noir-aged\/65 {
-      color: #3b4861 !important;
-    }
-
-    body.theme-inverted .text-noir-gold {
-      color: #8c6d17 !important;
-    }
-
-    /* Borders */
-    body.theme-inverted .border-noir-gold,
-    body.theme-inverted .border-noir-gold\/90,
-    body.theme-inverted .border-noir-gold\/80,
-    body.theme-inverted .border-noir-gold\/70,
-    body.theme-inverted .border-noir-gold\/60,
-    body.theme-inverted .border-noir-gold\/50,
-    body.theme-inverted .border-noir-gold\/40 {
-      border-color: #a8801a !important;
-    }
-
-    body.theme-inverted .border-noir-700,
-    body.theme-inverted .border-noir-700\/80,
-    body.theme-inverted .border-noir-700\/70,
-    body.theme-inverted .border-noir-700\/60,
-    body.theme-inverted .border-noir-800,
-    body.theme-inverted .border-noir-850 {
-      border-color: #cbbea9 !important;
-    }
-
-    /* Mode selector row */
-    body.theme-inverted #mode-toggle-group {
-      background-color: #eae0cf !important;
-      border-color: #cbbea9 !important;
-    }
-
-    body.theme-inverted .mode-btn:not(.bg-noir-gold) {
-      color: #3b4861 !important;
-    }
-
-    /* Header & Section headings */
-    body.theme-inverted header h1 {
-      color: #070b14 !important;
-      text-shadow: none !important;
-      filter: none !important;
-    }
-
-    body.theme-inverted header p {
-      color: #4b5873 !important;
-    }
-
-    body.theme-inverted header .bg-noir-900\/85 {
-      background-color: #f0e6d6 !important;
-      border-color: #cbbea9 !important;
-    }
-
-    body.theme-inverted #leaderboard-section h2 {
-      color: #070b14 !important;
-    }
-
-    body.theme-inverted #leaderboard-section p {
-      color: #4b5873 !important;
-    }
-
-    body.theme-inverted #leaderboard-section .bg-noir-900\/90 {
-      background-color: #faf6ee !important;
-      border-color: #cbbea9 !important;
-    }
-
-    /* Unified typebar console */
-    body.theme-inverted #unified-typebar {
-      background-color: rgba(250, 247, 240, 0.95) !important;
-      border-color: #b5923b !important;
-      box-shadow: 0 12px 35px rgba(160, 140, 110, 0.35) !important;
-    }
-
-    body.theme-inverted #online-search-input {
-      color: #070b14 !important;
-    }
-
-    body.theme-inverted #online-search-input::placeholder {
-      color: #55627e !important;
-    }
-
-    body.theme-inverted #chat-bar-placeholder {
-      color: #3f4c66 !important;
-    }
-
-    /* Buttons in inverted theme */
-    body.theme-inverted .close-leaderboard-btn,
-    body.theme-inverted #btn-skip-video,
-    body.theme-inverted .search-tag,
-    body.theme-inverted #tab-btn-online {
-      background-color: #faf6ee !important;
-      color: #3b4861 !important;
-      border-color: #cbbea9 !important;
-    }
-
-    body.theme-inverted #btn-reset-app {
-      background-image: linear-gradient(to right, #f4ede0, #ede4d3, #f4ede0) !important;
-      background-color: #f4ede0 !important;
-      color: #8c6d17 !important;
-      border-color: #8c6d17 !important;
-      box-shadow: 0 0 20px rgba(140, 109, 23, 0.25) !important;
-    }
-
-    body.theme-inverted #btn-view-ledger {
-      background-image: linear-gradient(to right, #fdf6e9, #f7ebd4, #fdf6e9) !important;
-      background-color: #fdf6e9 !important;
-      color: #966708 !important;
-      border-color: #b5923b !important;
-      box-shadow: 0 0 20px rgba(181, 146, 59, 0.25) !important;
-    }
-
-    body.theme-inverted #preset-daft {
-      background-color: #f7f1e5 !important;
-      border-color: #a8801a !important;
-      color: #8c6d17 !important;
-    }
-
-    body.theme-inverted #preset-discord {
-      background-color: #fcf0f0 !important;
-      border-color: #dc2626 !important;
-      color: #b91c1c !important;
-    }
-
-    /* Danger / Swatter cards */
-    body.theme-inverted .category-card[data-cat="swatter"] {
-      border-color: rgba(220, 38, 38, 0.45) !important;
-      background-image: linear-gradient(to bottom, #fff7f7 0%, #fbf0f0 100%) !important;
-    }
-
-    body.theme-inverted .text-rose-300,
-    body.theme-inverted .text-rose-400 {
-      color: #b91c1c !important;
-    }
-
-    body.theme-inverted .border-rose-900\/80,
-    body.theme-inverted .border-rose-900\/60,
-    body.theme-inverted .border-rose-700\/80 {
-      border-color: #dc2626 !important;
-    }
-
-    /* Scorecard & metrics dashboard */
-    body.theme-inverted #metrics-dashboard {
-      background-color: #f7f2e7 !important;
-      border-top-color: #a8801a !important;
-      box-shadow: 0 -25px 60px rgba(120, 95, 45, 0.22) !important;
-      color: #070b14 !important;
-    }
-
-    body.theme-inverted #metrics-dashboard .bg-gradient-to-r {
-      background-image: linear-gradient(to right, #fcf8f0, #f2eadb, #fcf8f0) !important;
-      background-color: #f7f1e5 !important;
-      border-color: #bfa054 !important;
-    }
-
-    body.theme-inverted #metrics-verdict-title {
-      color: #070b14 !important;
-    }
-
-    body.theme-inverted #metrics-verdict-comment {
-      color: #2b3548 !important;
-    }
-
-    body.theme-inverted #metrics-affinity-score {
-      color: #8c6d17 !important;
-      -webkit-text-fill-color: #8c6d17 !important;
-    }
-
-    body.theme-inverted .stat-box-card {
-      background-color: #faf6ee !important;
-      border-color: #ded3c0 !important;
-      color: #070b14 !important;
-    }
-
-    body.theme-inverted .stat-box-card:hover {
-      background-color: #ffffff !important;
-      border-color: #a8801a !important;
-      box-shadow: 0 16px 28px -6px rgba(120, 95, 45, 0.22), 0 0 14px rgba(168, 128, 26, 0.25) !important;
-    }
-
-    body.theme-inverted .stat-box-card .font-cinzel {
-      color: #070b14 !important;
-    }
-
-    body.theme-inverted .stat-box-card .font-vintage {
-      color: #4b5873 !important;
-    }
-
-    body.theme-inverted .stat-box-card .bg-noir-950 {
-      background-color: #eae0cf !important;
-      border-color: #cbbea9 !important;
-    }
-
-    body.theme-inverted #loading-card {
-      background-color: #f7f2e7 !important;
-      border-color: #a8801a !important;
-      color: #070b14 !important;
-    }
-
-    body.theme-inverted #reveal-popup > div {
-      background-color: #faf6ee !important;
-      border-color: #a8801a !important;
-      color: #070b14 !important;
-      box-shadow: 0 20px 50px rgba(100, 80, 40, 0.3) !important;
-    }
-
-    body.theme-inverted #reveal-modal-desc {
-      color: #2b3548 !important;
-    }
-
-    /* Footer in inverted theme */
-    body.theme-inverted footer {
-      background-color: rgba(240, 233, 220, 0.9) !important;
-      border-top-color: #cbbea9 !important;
     }
 </style>
 </head>
@@ -758,21 +418,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 </div>
 
 <!-- HEADER -->
-<header class="relative z-30 pt-6 pb-2 text-center px-4 max-w-5xl mx-auto w-full" id="stage-top">
-  <!-- Top navigation / quick switch bar -->
-  <div class="flex flex-wrap items-center justify-center gap-3 mb-2.5">
-    <div class="inline-flex items-center gap-2.5 px-3.5 py-1 rounded-full border border-noir-700 bg-noir-900/85 shadow-md">
-      <span class="w-2 h-2 rounded-full bg-noir-gold animate-ping"></span>
-      <span class="font-mono text-[11px] tracking-[0.22em] text-noir-aged uppercase">Drosophila Biosonic Sound Laboratories • Circa 1934</span>
-      <span class="text-noir-gold text-xs">★ ★ ★</span>
-    </div>
-    <!-- Quick toggle for Hall of Acclaim -->
-    <button aria-controls="leaderboard-section" aria-expanded="false" class="leaderboard-toggle-btn inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full border border-noir-gold/70 bg-noir-950/90 text-noir-gold hover:text-noir-creme hover:border-noir-gold text-xs font-mono tracking-wider transition-all shadow hover:bg-noir-900 cursor-pointer" type="button">
-      <span class="btn-toggle-text">✦ VIEW HALL OF ACCLAIM</span>
-      <span class="material-symbols-outlined text-sm btn-toggle-icon">keyboard_arrow_down</span>
-    </button>
-  </div>
-
+<header class="relative z-30 pt-8 pb-3 text-center px-4 max-w-5xl mx-auto w-full" id="stage-top">
   <!-- Title -->
   <h1 class="font-cinzel text-3xl sm:text-4xl md:text-5xl font-black tracking-wide text-noir-creme drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)] uppercase leading-tight">
     WELCOME TO FLY CONNECTOME <br class="hidden sm:inline"/>
@@ -780,18 +426,6 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       MUSIC RATER
     </span>
   </h1>
-
-  <!-- Subtitle -->
-  <p class="font-vintage text-xs sm:text-sm tracking-widest text-noir-aged mt-1.5 max-w-3xl mx-auto uppercase">
-    GET READY FOR THE MUSIC CONNOISSEUR FLY TO JUDGE YOUR TASTE IN MUSIC
-  </p>
-
-  <!-- Ornamental divider line -->
-  <div class="flex items-center justify-center gap-4 mt-2.5 opacity-75">
-    <div class="h-[1px] w-24 bg-gradient-to-r from-transparent to-noir-gold"></div>
-    <span class="text-noir-gold text-xs font-cinzel tracking-widest">✦ // 139,255 SYNAPSES // ✦</span>
-    <div class="h-[1px] w-24 bg-gradient-to-l from-transparent to-noir-gold"></div>
-  </div>
 </header>
 
 <!-- MAIN INTERACTIVE STAGE -->
@@ -1030,13 +664,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 </main>
 
 <!-- SECTION: CONNECTOME HALL OF ACCLAIM / LEADERBOARD (COLLAPSIBLE / PERSISTENT) -->
-<section aria-hidden="true" class="hidden opacity-0 relative z-20 py-10 px-4 max-w-5xl mx-auto w-full border-t border-noir-800/80 mt-8 transition-all duration-500 ease-in-out" id="leaderboard-section">
+<section aria-hidden="true" class="hidden opacity-0 relative z-20 pt-8 pb-12 px-4 max-w-5xl mx-auto w-full border-t border-noir-800/80 mt-8 transition-all duration-500 ease-in-out" id="leaderboard-section">
   
-  <!-- Top Section Header & Close / Rate Another Buttons -->
-  <div class="flex items-center justify-between max-w-4xl mx-auto mb-3 px-2">
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-noir-gold/40 bg-noir-900/90 text-noir-gold text-[10px] font-mono tracking-widest uppercase shadow">
-      <span>✦ CONNECTOME AUDIT LEDGER OPEN</span>
-    </div>
+  <!-- Top Section Close / Rate Another Buttons -->
+  <div class="flex items-center justify-end max-w-4xl mx-auto mb-4 px-2">
     <div class="flex items-center gap-2">
       <button class="btn-return-and-rate inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full border border-noir-gold bg-noir-900 text-noir-gold hover:bg-noir-gold hover:text-noir-950 text-xs font-mono tracking-wider transition-all shadow cursor-pointer font-bold" type="button">
         <span>✦ RATE ANOTHER SONG</span>
@@ -1049,24 +680,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     </div>
   </div>
 
-  <!-- Section Title & Header Plaque -->
+  <!-- Section Title -->
   <div class="text-center mb-6">
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-noir-gold/50 bg-noir-900/90 text-noir-gold text-[11px] font-mono tracking-widest uppercase mb-2 shadow">
-      <span>✦ OFFICIAL ARCHIVES // REGISTER OF ACOUSTIC JUDGMENT ✦</span>
-    </div>
     <h2 class="font-cinzel text-2xl sm:text-3xl md:text-4xl font-black text-noir-creme tracking-wide">
       CONNECTOME HALL OF ACCLAIM
     </h2>
-    <p class="font-vintage text-xs sm:text-sm text-noir-aged mt-1 tracking-wider uppercase max-w-2xl mx-auto">
-      Auditory ledgers evaluated across 139,255 synapses of the drosophila audio cortege
-    </p>
-
-    <!-- Art-deco ornament divider -->
-    <div class="flex items-center justify-center gap-3 my-3 opacity-70">
-      <div class="h-[1px] w-20 bg-gradient-to-r from-transparent to-noir-gold"></div>
-      <span class="font-cinzel text-noir-gold text-xs">✤ ARCHIVED &amp; LIVE AUDITS ✤</span>
-      <div class="h-[1px] w-20 bg-gradient-to-l from-transparent to-noir-gold"></div>
-    </div>
 
     <!-- Category Tabs Filter -->
     <div class="flex flex-wrap items-center justify-center gap-2 max-w-4xl mx-auto mt-2" id="leaderboard-tabs" role="tablist">
@@ -1099,21 +717,6 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     <!-- Category Cards rendered dynamically -->
   </div>
 
-  <!-- Bottom ledger footnote & Collapse / Scroll-up link -->
-  <div class="mt-8 pt-4 border-t border-noir-850 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-    <div class="font-mono text-[11px] text-noir-aged">
-      <span class="text-noir-gold">✦ ARCHIVE CITATION:</span> Drosophila Acoustic Courtship Atlas, Vol. XIV, 1934. All entries certified by Lord Drosophila, Esq.
-    </div>
-    <div class="flex items-center gap-2.5">
-      <button class="btn-return-and-rate inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border-2 border-noir-gold bg-noir-900 text-noir-gold hover:bg-noir-gold hover:text-noir-950 font-cinzel text-xs tracking-wider font-bold transition-all shadow cursor-pointer" type="button">
-        <span>✦ RATE ANOTHER SONG ✦</span>
-      </button>
-      <button class="close-leaderboard-btn inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-noir-gold/70 bg-noir-900/90 text-noir-gold hover:text-noir-creme hover:bg-noir-850 font-mono text-xs tracking-wider transition-all cursor-pointer" type="button">
-        <span class="material-symbols-outlined text-sm">keyboard_arrow_up</span>
-        <span>HIDE &amp; RETURN TO BOOTH</span>
-      </button>
-    </div>
-  </div>
 </section>
 
 <!-- STATE 5: METRICS SLIDE-UP SCORECARD & RE-EVALUATION DASHBOARD -->
@@ -1218,32 +821,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   </div>
 </div>
 
-<!-- FOOTER -->
-<footer class="relative z-20 py-4 text-center text-xs font-mono text-noir-aged/65 border-t border-noir-850 bg-noir-950/85 px-4">
-  <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-    <span>1930s NOIR EDITION // DROSOPHILA MELANOGASTER AUDIT ENGINE</span>
-    <span>CONNECTOME ATLAS 4.8.19 • NOIR-SOUND ARCHIVE</span>
-  </div>
-</footer>
-
 <!-- SCRIPT ENGINE -->
 <script>
-    // Change 3C: 1930s Inverted Archive Theme Controller
-    function toggleInvertedTheme() {
-      document.body.classList.toggle('theme-inverted');
-      const isInverted = document.body.classList.contains('theme-inverted');
-      try {
-        sessionStorage.setItem('flywire_theme_inverted', isInverted ? '1' : '0');
-      } catch (e) {}
-    }
-
 window.addEventListener('DOMContentLoaded', () => {
-    // Restore Inverted 1930s Archive Palette if previously toggled
-    try {
-      if (sessionStorage.getItem('flywire_theme_inverted') === '1') {
-        document.body.classList.add('theme-inverted');
-      }
-    } catch (e) {}
 
     // Media & Visual Assets
     const IMG_HERO_IDLE = "/static/fly_hero.png";
@@ -1628,7 +1208,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     btnResetApp.addEventListener('click', () => {
-      toggleInvertedTheme();
       resetToPristine(true);
       document.getElementById('stage-top').scrollIntoView({ behavior: 'smooth' });
     });
@@ -1874,7 +1453,6 @@ window.addEventListener('DOMContentLoaded', () => {
       const btnViewLedger = document.getElementById('btn-view-ledger');
       if (btnViewLedger) {
         btnViewLedger.onclick = () => {
-          toggleInvertedTheme();
           metricsDashboard.classList.remove('translate-y-0');
           metricsDashboard.classList.add('translate-y-full');
 
