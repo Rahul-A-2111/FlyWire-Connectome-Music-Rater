@@ -38,7 +38,7 @@ def save_leaderboard(entries):
     except Exception as e:
         print(f"[ERROR] Could not save leaderboard: {e}", flush=True)
 
-HTML_TEMPLATE = """<!DOCTYPE html>
+HTML_TEMPLATE = r"""<!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -172,157 +172,131 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     }
 
     /* ========================================================
-       1930s NOIR SPARKLE BUTTON EFFECT (ADAPTED TO PALETTE)
+       CHANGE 1 — GEOMETRIC BACKGROUND PATTERN (1930s PALETTE)
        ======================================================== */
     :root {
-      --spark: 10s;
-      --spark-half: 5s;
-      --transition: 0.3s;
-      --cut: 1.5px;
+      --bg-pattern-base: #04122e;
+      --bg-pattern-accent: rgba(212, 175, 55, 0.22);
     }
 
-    .sparkle-button,
-    button:not(.no-sparkle) {
-      --active: 0;
-      --spark-color: rgba(212, 175, 55, 0.95);
-      --spark-glow: rgba(212, 175, 55, 0.45);
-      --spark-border: rgba(212, 175, 55, 0.45);
+    .geometric-pattern-bg {
+      background-color: var(--bg-pattern-base, #04122e);
+      opacity: 0.8;
+      background-image:
+        radial-gradient(circle farthest-side at 0% 50%, var(--bg-pattern-base, #04122e) 23.5%, transparent 0),
+        radial-gradient(circle farthest-side at 0% 50%, var(--bg-pattern-accent, rgba(212, 175, 55, 0.22)) 24%, transparent 0),
+        linear-gradient(var(--bg-pattern-base, #04122e) 14%, transparent 0, transparent 85%, var(--bg-pattern-base, #04122e) 0),
+        linear-gradient(150deg, var(--bg-pattern-base, #04122e) 24%, var(--bg-pattern-accent, rgba(212, 175, 55, 0.22)) 0 26%, transparent 0 74%, var(--bg-pattern-accent, rgba(212, 175, 55, 0.22)) 0 76%, var(--bg-pattern-base, #04122e) 0),
+        linear-gradient(30deg, var(--bg-pattern-base, #04122e) 24%, var(--bg-pattern-accent, rgba(212, 175, 55, 0.22)) 0 26%, transparent 0 74%, var(--bg-pattern-accent, rgba(212, 175, 55, 0.22)) 0 76%, var(--bg-pattern-base, #04122e) 0),
+        linear-gradient(90deg, var(--bg-pattern-accent, rgba(212, 175, 55, 0.22)) 1.6%, var(--bg-pattern-base, #04122e) 0 98.4%, var(--bg-pattern-accent, rgba(212, 175, 55, 0.22)) 0);
+      background-position: 16px 23px, 14px 23px, 0 0, 0 0, 0 0, 0 0;
+      background-size: 30px 45px;
+    }
+
+    /* ========================================================
+       CHANGE 2 — 3D HOVER EFFECT FOR LEADERBOARD ENTRIES
+       ======================================================== */
+    .category-card {
+      perspective: 1000px;
+    }
+
+    .song-item {
+      transform-style: preserve-3d;
+      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease, background-color 0.4s ease;
+      will-change: transform;
+      position: relative;
+    }
+
+    .song-item:hover {
+      transform: rotate3d(0.5, 1, 0, 15deg) translate3d(0px, -4px, 16px);
+      box-shadow: 0 20px 30px -8px rgba(0, 0, 0, 0.85), 0 0 16px rgba(212, 175, 55, 0.35);
+      border-color: #d4af37 !important;
+      z-index: 20;
+    }
+
+    /* ========================================================
+       CHANGE 3B — 3D HOVER EFFECT FOR STAT BOXES
+       ======================================================== */
+    .stat-boxes-grid {
+      perspective: 1000px;
+    }
+
+    .stat-box-card {
+      transform-style: preserve-3d;
+      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease, background-color 0.4s ease;
+      will-change: transform;
+      position: relative;
+    }
+
+    .stat-box-card:hover {
+      transform: rotate3d(0.5, 1, 0, 12deg) translate3d(0px, -4px, 14px);
+      box-shadow: 0 20px 30px -8px rgba(0, 0, 0, 0.85), 0 0 16px rgba(212, 175, 55, 0.3);
+      border-color: rgba(212, 175, 55, 0.85) !important;
+      z-index: 15;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .song-item:hover,
+      .stat-box-card:hover {
+        transform: none !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
+      }
+    }
+
+    /* ========================================================
+       CHANGE 4 — UIVERSE GLOW & LIGHT SWEEP BUTTON EFFECT
+       ======================================================== */
+    button:not(.no-sweep) {
+      --btn-glow-inner: rgba(212, 175, 55, 0.4);
+      --btn-glow-outer: rgba(212, 175, 55, 0.12);
+      --btn-hover-glow-inner: rgba(212, 175, 55, 0.65);
+      --btn-hover-glow-outer: rgba(212, 175, 55, 0.28);
+      --btn-sweep-color: rgba(244, 236, 225, 0.3);
       position: relative;
       overflow: hidden;
       isolation: isolate;
       cursor: pointer;
-      white-space: nowrap;
-      scale: calc(1 + (var(--active) * 0.035));
-      box-shadow: 0 0 calc(var(--active) * 24px) calc(var(--active) * 4px) var(--spark-glow),
-                  0 0 calc(var(--active) * 6px) 0 var(--spark-border) inset;
-      transition: box-shadow var(--transition), scale var(--transition), transform var(--transition), filter var(--transition);
+      transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.2s ease, filter 0.3s ease, color 0.3s ease;
+      box-shadow: inset 0 0 10px var(--btn-glow-inner), 0 0 9px 3px var(--btn-glow-outer);
     }
 
-    .sparkle-button:is(:hover, :focus-visible),
-    button:not(.no-sparkle):is(:hover, :focus-visible) {
-      --active: 1;
-      --play-state: running;
+    button:not(.no-sweep):hover {
+      box-shadow: inset 0 0 12px var(--btn-hover-glow-inner), 0 0 14px 4px var(--btn-hover-glow-outer);
     }
 
-    .sparkle-button:active,
-    button:not(.no-sparkle):active {
-      scale: 0.98;
-      transition: 0.12s;
+    button:not(.no-sweep):active {
+      transform: scale(0.98);
     }
 
-    /* Dual radial ambient highlight inside button reflecting palette */
-    .sparkle-button::after,
-    button:not(.no-sparkle):after {
+    button:not(.no-sweep)::before {
       content: "";
       position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background: radial-gradient(
-        55% 65% at center 100%,
-        var(--spark-glow) 0%,
+      left: -5em;
+      width: 5em;
+      height: 100%;
+      top: 0;
+      pointer-events: none;
+      z-index: 1;
+      transition: transform 0.5s ease-in-out;
+      background: linear-gradient(
+        to right,
+        transparent 1%,
+        var(--btn-sweep-color) 40%,
+        var(--btn-sweep-color) 60%,
         transparent 100%
       );
-      opacity: calc(var(--active) * 0.35);
-      pointer-events: none;
-      z-index: 1;
-      transition: opacity var(--transition);
     }
 
-    /* Outer border halo glow */
-    .sparkle-button:before,
-    button:not(.no-sparkle):before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      border: 1.5px solid var(--spark-border);
-      border-radius: inherit;
-      opacity: var(--active, 0);
-      pointer-events: none;
-      transition: opacity var(--transition);
+    button:not(.no-sweep):hover::before {
+      transform: translateX(45em);
     }
 
-    /* The rotating spark perimeter beam */
-    .spark {
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      rotate: 0deg;
-      overflow: hidden;
-      mask: linear-gradient(white, transparent 55%);
-      -webkit-mask: linear-gradient(white, transparent 55%);
-      animation: flip var(--spark) infinite steps(2, end);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    @keyframes flip {
-      to {
-        rotate: 360deg;
-      }
-    }
-
-    .spark:before {
-      content: "";
-      position: absolute;
-      width: 250%;
-      aspect-ratio: 1;
-      top: 0%;
-      left: 50%;
-      z-index: 1;
-      translate: -50% -15%;
-      rotate: 0;
-      transform: rotate(-90deg);
-      opacity: calc((var(--active) * 0.6) + 0.45);
-      background: conic-gradient(
-        from 0deg,
-        transparent 0 330deg,
-        var(--spark-color, rgba(212, 175, 55, 0.9)) 350deg,
-        #ffffff 360deg
-      );
-      transition: opacity var(--transition);
-      animation: rotate-spark var(--spark-half, calc(var(--spark) / 2)) linear infinite both;
-    }
-
-    @keyframes rotate-spark {
-      to {
-        transform: rotate(90deg);
-      }
-    }
-
-    /* Ensure text & icons sit above the rotating spark beam */
-    .sparkle-button > *:not(.spark),
-    button:not(.no-sparkle) > *:not(.spark) {
+    button:not(.no-sweep) > * {
       position: relative;
       z-index: 2;
     }
 
-    /* Icon bounce animation on hover from the user's CSS */
-    .sparkle-button:is(:hover, :focus-visible) .material-symbols-outlined,
-    .sparkle-button:is(:hover, :focus-visible) svg,
-    button:not(.no-sparkle):is(:hover, :focus-visible) .material-symbols-outlined,
-    button:not(.no-sparkle):is(:hover, :focus-visible) svg {
-      animation: sparkle-bounce 0.6s ease;
-    }
-
-    @keyframes sparkle-bounce {
-      35%, 65% {
-        scale: 1.22;
-      }
-    }
-
-    /* COLOR THEME VARIATIONS (Preserving 1930s Noir Palette) */
-    /* Red / Danger / Swatter buttons */
-    #preset-discord,
-    button[data-category="swatter"],
-    button[class*="border-rose-700"],
-    button[class*="border-rose-900"],
-    .btn-swatter-trigger {
-      --spark-color: #f87171;
-      --spark-glow: rgba(239, 68, 68, 0.55);
-      --spark-border: rgba(239, 68, 68, 0.65);
-    }
-
+    /* BUTTON COLOR THEME VARIANTS */
     /* Gold / Primary / Glamour Noir buttons */
     #btn-see-results,
     #btn-view-ledger,
@@ -338,25 +312,44 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     button[data-category="courtship"],
     button[data-category="all"],
     button[data-category="recent"] {
-      --spark-color: #fbbf24;
-      --spark-glow: rgba(245, 158, 11, 0.6);
-      --spark-border: rgba(212, 175, 55, 0.7);
+      --btn-glow-inner: rgba(212, 175, 55, 0.45);
+      --btn-glow-outer: rgba(212, 175, 55, 0.18);
+      --btn-hover-glow-inner: rgba(212, 175, 55, 0.75);
+      --btn-hover-glow-outer: rgba(245, 158, 11, 0.35);
+      --btn-sweep-color: rgba(254, 243, 199, 0.45);
+    }
+
+    /* Red / Danger / Swatter buttons */
+    #preset-discord,
+    button[data-category="swatter"],
+    button[class*="border-rose-700"],
+    button[class*="border-rose-900"],
+    .btn-swatter-trigger {
+      --btn-glow-inner: rgba(239, 68, 68, 0.5);
+      --btn-glow-outer: rgba(239, 68, 68, 0.2);
+      --btn-hover-glow-inner: rgba(239, 68, 68, 0.8);
+      --btn-hover-glow-outer: rgba(239, 68, 68, 0.4);
+      --btn-sweep-color: rgba(254, 202, 202, 0.45);
     }
 
     /* Mechanosensory / Violet / Electric buttons */
     button[data-category="organ"],
     .mode-btn[data-mode="territorial"] {
-      --spark-color: #d9b9ff;
-      --spark-glow: rgba(217, 185, 255, 0.45);
-      --spark-border: rgba(217, 185, 255, 0.6);
+      --btn-glow-inner: rgba(217, 185, 255, 0.4);
+      --btn-glow-outer: rgba(217, 185, 255, 0.18);
+      --btn-hover-glow-inner: rgba(217, 185, 255, 0.65);
+      --btn-hover-glow-outer: rgba(217, 185, 255, 0.35);
+      --btn-sweep-color: rgba(237, 222, 255, 0.45);
     }
 
     /* Nocturnal / Indigo / Sleep buttons */
     button[data-category="sleep"],
     .mode-btn[data-mode="sleep"] {
-      --spark-color: #818cf8;
-      --spark-glow: rgba(129, 140, 248, 0.45);
-      --spark-border: rgba(129, 140, 248, 0.6);
+      --btn-glow-inner: rgba(129, 140, 248, 0.4);
+      --btn-glow-outer: rgba(129, 140, 248, 0.18);
+      --btn-hover-glow-inner: rgba(129, 140, 248, 0.65);
+      --btn-hover-glow-outer: rgba(129, 140, 248, 0.35);
+      --btn-sweep-color: rgba(224, 231, 255, 0.45);
     }
 
     /* Muted / Utility buttons */
@@ -365,9 +358,125 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     #tab-btn-online,
     #btn-skip-video,
     .btn-preview-audio {
-      --spark-color: #d4af37;
-      --spark-glow: rgba(212, 175, 55, 0.35);
-      --spark-border: rgba(212, 175, 55, 0.35);
+      --btn-glow-inner: rgba(212, 175, 55, 0.25);
+      --btn-glow-outer: rgba(212, 175, 55, 0.08);
+      --btn-hover-glow-inner: rgba(212, 175, 55, 0.48);
+      --btn-hover-glow-outer: rgba(212, 175, 55, 0.22);
+      --btn-sweep-color: rgba(244, 236, 225, 0.28);
+    }
+
+    /* ========================================================
+       CHANGE 3C — INVERTED 1930s NOIR ARCHIVE PALETTE
+       ======================================================== */
+    body.theme-inverted {
+      background-color: #f3ede2 !important;
+      color: #070b14 !important;
+      --bg-pattern-base: #f3ede2;
+      --bg-pattern-accent: rgba(140, 105, 20, 0.22);
+      --btn-glow-inner: rgba(153, 115, 22, 0.35);
+      --btn-glow-outer: rgba(153, 115, 22, 0.15);
+      --btn-hover-glow-inner: rgba(153, 115, 22, 0.6);
+      --btn-hover-glow-outer: rgba(153, 115, 22, 0.3);
+      --btn-sweep-color: rgba(180, 135, 25, 0.35);
+    }
+
+    body.theme-inverted .film-vignette {
+      box-shadow: inset 0 0 130px rgba(180, 160, 130, 0.55), inset 0 0 220px rgba(140, 120, 90, 0.45) !important;
+    }
+
+    body.theme-inverted .spotlight-radial {
+      background: radial-gradient(ellipse at 50% 12%, rgba(153, 115, 22, 0.14) 0%, rgba(200, 190, 170, 0.1) 40%, transparent 75%) !important;
+    }
+
+    body.theme-inverted .bg-noir-950,
+    body.theme-inverted .bg-noir-950\/95,
+    body.theme-inverted .bg-noir-950\/90,
+    body.theme-inverted .bg-noir-950\/85,
+    body.theme-inverted .bg-noir-950\/80 {
+      background-color: rgba(250, 247, 240, 0.95) !important;
+    }
+
+    body.theme-inverted .bg-noir-900,
+    body.theme-inverted .bg-noir-900\/95,
+    body.theme-inverted .bg-noir-900\/90,
+    body.theme-inverted .bg-noir-900\/85,
+    body.theme-inverted .bg-noir-900\/80 {
+      background-color: rgba(242, 235, 222, 0.95) !important;
+    }
+
+    body.theme-inverted .bg-noir-850 {
+      background-color: #e5dac7 !important;
+    }
+
+    body.theme-inverted .bg-noir-800 {
+      background-color: #d9cdb7 !important;
+    }
+
+    body.theme-inverted .text-noir-creme {
+      color: #070b14 !important;
+    }
+
+    body.theme-inverted .text-noir-sepia {
+      color: #1a2745 !important;
+    }
+
+    body.theme-inverted .text-noir-aged,
+    body.theme-inverted .text-noir-aged\/75,
+    body.theme-inverted .text-noir-aged\/70,
+    body.theme-inverted .text-noir-aged\/65 {
+      color: #3b4861 !important;
+    }
+
+    body.theme-inverted .text-noir-gold {
+      color: #8c6d17 !important;
+    }
+
+    body.theme-inverted .border-noir-gold,
+    body.theme-inverted .border-noir-gold\/90,
+    body.theme-inverted .border-noir-gold\/80,
+    body.theme-inverted .border-noir-gold\/70,
+    body.theme-inverted .border-noir-gold\/60,
+    body.theme-inverted .border-noir-gold\/50,
+    body.theme-inverted .border-noir-gold\/40 {
+      border-color: #a8801a !important;
+    }
+
+    body.theme-inverted .border-noir-700,
+    body.theme-inverted .border-noir-700\/80,
+    body.theme-inverted .border-noir-700\/70,
+    body.theme-inverted .border-noir-700\/60,
+    body.theme-inverted .border-noir-800,
+    body.theme-inverted .border-noir-850 {
+      border-color: #cbbea9 !important;
+    }
+
+    body.theme-inverted #unified-typebar {
+      background-color: rgba(250, 247, 240, 0.95) !important;
+      border-color: #b5923b !important;
+      box-shadow: 0 12px 35px rgba(160, 140, 110, 0.35) !important;
+    }
+
+    body.theme-inverted #online-search-input {
+      color: #070b14 !important;
+    }
+
+    body.theme-inverted #online-search-input::placeholder {
+      color: #55627e !important;
+    }
+
+    body.theme-inverted #chat-bar-placeholder {
+      color: #3f4c66 !important;
+    }
+
+    body.theme-inverted footer {
+      background-color: rgba(240, 233, 220, 0.9) !important;
+      border-top-color: #cbbea9 !important;
+    }
+
+    body.theme-inverted #metrics-dashboard {
+      background-color: rgba(246, 240, 230, 0.98) !important;
+      border-top-color: #a8801a !important;
+      box-shadow: 0 -25px 60px rgba(140, 120, 90, 0.35) !important;
     }
 </style>
 </head>
@@ -375,7 +484,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <!-- Ambient Overlays -->
 <div class="fixed inset-0 film-vignette z-40 pointer-events-none"></div>
 <div class="fixed inset-0 spotlight-radial z-0 pointer-events-none"></div>
-<div class="fixed inset-0 z-0 pointer-events-none opacity-25 bg-[radial-gradient(#d4af37_1px,transparent_1px)] [background-size:26px_26px]"></div>
+<div class="fixed inset-0 z-0 pointer-events-none geometric-pattern-bg"></div>
 
 <!-- FLOATING TOAST -->
 <div class="fixed top-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-500 transform -translate-y-4" id="reset-toast">
@@ -479,9 +588,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
               <span id="film-live-tag">OPTICAL REEL ROLLING</span>
             </div>
             <div class="flex items-center gap-2">
-              <button id="btn-skip-video" class="pointer-events-auto px-2.5 py-0.5 rounded-full bg-noir-900/90 border border-noir-gold/80 text-noir-gold hover:text-noir-creme text-[10px] font-mono tracking-wider transition-all shadow hover:bg-noir-850 cursor-pointer sparkle-button" type="button">
-                <span class="relative z-10">SKIP TO REPORT ➔</span>
-                <span class="spark" aria-hidden="true"></span>
+              <button id="btn-skip-video" class="pointer-events-auto px-2.5 py-0.5 rounded-full bg-noir-900/90 border border-noir-gold/80 text-noir-gold hover:text-noir-creme text-[10px] font-mono tracking-wider transition-all shadow hover:bg-noir-850 cursor-pointer" type="button">
+                <span>SKIP TO REPORT ➔</span>
               </button>
               <div class="font-mono text-xs text-noir-creme bg-noir-900/90 px-2.5 py-0.5 rounded border border-noir-700" id="film-timer">
                 00:00 / 00:10
@@ -509,9 +617,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             <p class="font-vintage text-xs text-noir-sepia mb-5 leading-relaxed" id="reveal-modal-desc">
               The male Drosophila connectome has fully resolved your harmonic acoustic vibrations. Step inside the screening booth!
             </p>
-            <button class="w-full py-3.5 px-6 rounded-xl font-cinzel text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-gold via-amber-200 to-noir-gold text-noir-950 shadow-xl hover:brightness-110 active:scale-95 transition-all btn-gold-pulse cursor-pointer sparkle-button" id="btn-see-results">
-              <span class="relative z-10">SEE RESULTS ➔</span>
-              <span class="spark" aria-hidden="true"></span>
+            <button class="w-full py-3.5 px-6 rounded-xl font-cinzel text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-gold via-amber-200 to-noir-gold text-noir-950 shadow-xl hover:brightness-110 active:scale-95 transition-all btn-gold-pulse cursor-pointer" id="btn-see-results">
+              <span>SEE RESULTS ➔</span>
             </button>
           </div>
         </div>
@@ -525,17 +632,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <div class="flex flex-col items-center">
       <!-- Mode buttons row -->
       <div class="flex items-center justify-center gap-2 p-1.5 rounded-full bg-noir-900/90 border border-noir-700 shadow-lg w-full" id="mode-toggle-group">
-        <button class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-wider uppercase transition-all bg-noir-gold text-noir-950 font-bold sparkle-button" data-mode="courtship" type="button">
-          <span class="relative z-10">♫ Courtship</span>
-          <span class="spark" aria-hidden="true"></span>
+        <button class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-wider uppercase transition-all bg-noir-gold text-noir-950 font-bold" data-mode="courtship" type="button">
+          <span>♫ Courtship</span>
         </button>
-        <button class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-wider uppercase transition-all text-noir-aged hover:text-noir-creme sparkle-button" data-mode="territorial" type="button">
-          <span class="relative z-10">⚡ Territorial</span>
-          <span class="spark" aria-hidden="true"></span>
+        <button class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-wider uppercase transition-all text-noir-aged hover:text-noir-creme" data-mode="territorial" type="button">
+          <span>⚡ Territorial</span>
         </button>
-        <button class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-wider uppercase transition-all text-noir-aged hover:text-noir-creme sparkle-button" data-mode="sleep" type="button">
-          <span class="relative z-10">☾ Quiet / Sleep</span>
-          <span class="spark" aria-hidden="true"></span>
+        <button class="mode-btn flex-1 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-wider uppercase transition-all text-noir-aged hover:text-noir-creme" data-mode="sleep" type="button">
+          <span>☾ Quiet / Sleep</span>
         </button>
       </div>
 
@@ -556,21 +660,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     
     <!-- SOURCE SELECTION TABS: UPLOAD VS ONLINE ARCHIVE -->
     <div class="flex items-center justify-center gap-2 mb-2" id="source-tabs">
-      <button class="px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all border border-noir-gold bg-noir-900 text-noir-gold font-bold shadow cursor-pointer sparkle-button" id="tab-btn-upload" type="button">
-        <span class="relative z-10">📁 Upload Audio File</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all border border-noir-gold bg-noir-900 text-noir-gold font-bold shadow cursor-pointer" id="tab-btn-upload" type="button">
+        <span>📁 Upload Audio File</span>
       </button>
-      <button class="px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all border border-noir-700 bg-noir-950 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 cursor-pointer sparkle-button" id="tab-btn-online" type="button">
-        <span class="relative z-10">🌐 Search Archives Online</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all border border-noir-700 bg-noir-950 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 cursor-pointer" id="tab-btn-online" type="button">
+        <span>🌐 Search Archives Online</span>
       </button>
     </div>
 
     <!-- THE UNIFIED PILL TYPEBAR (SHARABLE FOR BOTH FILE DROP/PICK AND ONLINE TEXT SEARCH) -->
-    <div class="group relative flex items-center justify-between w-full p-2 pl-4 pr-2 rounded-full bg-noir-900/95 border-2 border-noir-700 hover:border-noir-gold focus-within:border-noir-gold shadow-[0_12px_40px_rgba(0,0,0,0.85)] backdrop-blur-md transition-all cursor-pointer" id="unified-typebar">
-      
-      <!-- Left Leading Icon (Microphone for Upload, Search Magnifier for Online) -->
-      <span class="material-symbols-outlined text-noir-gold opacity-90 group-hover:scale-110 transition-transform text-2xl shrink-0 mr-3 select-none" id="typebar-icon">mic</span>
+    <div class="group relative flex items-center justify-between w-full p-2 pl-5 pr-2 rounded-full bg-noir-900/95 border-2 border-noir-700 hover:border-noir-gold focus-within:border-noir-gold shadow-[0_12px_40px_rgba(0,0,0,0.85)] backdrop-blur-md transition-all cursor-pointer" id="unified-typebar">
       
       <!-- Interactive Central Slot -->
       <div class="flex-1 overflow-hidden relative flex items-center min-w-0" id="typebar-interactive-slot">
@@ -587,33 +686,30 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       </div>
 
       <!-- Right Action Button: Upload Arrow or Search Button -->
-      <button class="shrink-0 ml-2 w-10 h-10 rounded-full bg-gradient-to-br from-noir-gold via-amber-400 to-amber-600 text-noir-950 flex items-center justify-center font-bold shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer sparkle-button" id="typebar-action-btn" title="Upload Audio File" type="button">
+      <button class="shrink-0 ml-2 w-10 h-10 rounded-full bg-gradient-to-br from-noir-gold via-amber-400 to-amber-600 text-noir-950 flex items-center justify-center font-bold shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer" id="typebar-action-btn" title="Upload Audio File" type="button">
         <span class="material-symbols-outlined font-black text-xl relative z-10" id="typebar-action-icon">arrow_upward</span>
-        <span class="spark" aria-hidden="true"></span>
       </button>
     </div>
 
     <!-- SUB-ROW 1: QUICK DEMOS (Visible in Upload Mode) -->
     <div class="mt-2.5 flex flex-wrap items-center justify-center gap-2" id="upload-quick-demos">
-      <button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-noir-900/90 border border-noir-gold/80 hover:border-noir-gold text-noir-gold hover:text-noir-creme font-mono text-[11px] tracking-wider transition-all shadow active:scale-95 cursor-pointer sparkle-button" id="preset-daft" type="button">
-        <span class="relative z-10">✦ Quick Demo: "Around The World" (Daft Punk)</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-noir-900/90 border border-noir-gold/80 hover:border-noir-gold text-noir-gold hover:text-noir-creme font-mono text-[11px] tracking-wider transition-all shadow active:scale-95 cursor-pointer" id="preset-daft" type="button">
+        <span>✦ Quick Demo: "Around The World" (Daft Punk)</span>
       </button>
-      <button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-noir-900/90 border border-rose-700/80 hover:border-rose-500 text-rose-300 hover:text-rose-100 font-mono text-[11px] tracking-wider transition-all shadow active:scale-95 cursor-pointer sparkle-button" id="preset-discord" type="button">
-        <span class="relative z-10">⚠ Quick Demo: "Discordant Screech / Swatter Noise"</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-noir-900/90 border border-rose-700/80 hover:border-rose-500 text-rose-300 hover:text-rose-100 font-mono text-[11px] tracking-wider transition-all shadow active:scale-95 cursor-pointer" id="preset-discord" type="button">
+        <span>⚠ Quick Demo: "Discordant Screech / Swatter Noise"</span>
       </button>
     </div>
 
     <!-- SUB-ROW 2: SUGGESTED CHIPS (Visible in Online Search Mode) -->
     <div class="hidden mt-2.5 flex flex-wrap items-center justify-center gap-1.5 text-[10px] font-mono text-noir-aged" id="online-suggestion-chips">
       <span class="text-noir-gold font-bold">Suggested:</span>
-      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer sparkle-button" data-query="Cab Calloway Minnie the Moocher">Cab Calloway</button>
-      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer sparkle-button" data-query="Duke Ellington Caravan">Duke Ellington</button>
-      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer sparkle-button" data-query="Miles Davis So What">Miles Davis</button>
-      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer sparkle-button" data-query="Queen Bohemian Rhapsody">Queen</button>
-      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer sparkle-button" data-query="Stevie Wonder Superstition">Stevie Wonder</button>
-      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer sparkle-button" data-query="Erik Satie Gymnopedie">Erik Satie</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Cab Calloway Minnie the Moocher">Cab Calloway</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Duke Ellington Caravan">Duke Ellington</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Miles Davis So What">Miles Davis</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Queen Bohemian Rhapsody">Queen</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Stevie Wonder Superstition">Stevie Wonder</button>
+      <button class="search-tag px-2.5 py-0.5 rounded-full bg-noir-950 border border-noir-700 hover:border-noir-gold text-noir-sepia hover:text-noir-gold transition-colors cursor-pointer" data-query="Erik Satie Gymnopedie">Erik Satie</button>
     </div>
 
     <!-- SUB-ROW 3: ONLINE SEARCH RESULTS EXPANDED CONTAINER -->
@@ -626,11 +722,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     <!-- PROMINENT DIRECT LEADERBOARD TOGGLE -->
     <div class="mt-3 flex flex-col items-center justify-center">
-      <button aria-controls="leaderboard-section" aria-expanded="false" class="leaderboard-toggle-btn group inline-flex items-center gap-2.5 px-6 py-2 rounded-full border-2 border-noir-gold/80 bg-gradient-to-r from-noir-900 via-noir-850 to-noir-900 text-noir-gold hover:text-noir-creme hover:border-noir-gold font-cinzel text-xs tracking-widest font-bold uppercase shadow-[0_4px_20px_rgba(0,0,0,0.8)] hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all active:scale-95 cursor-pointer sparkle-button" type="button">
+      <button aria-controls="leaderboard-section" aria-expanded="false" class="leaderboard-toggle-btn group inline-flex items-center gap-2.5 px-6 py-2 rounded-full border-2 border-noir-gold/80 bg-gradient-to-r from-noir-900 via-noir-850 to-noir-900 text-noir-gold hover:text-noir-creme hover:border-noir-gold font-cinzel text-xs tracking-widest font-bold uppercase shadow-[0_4px_20px_rgba(0,0,0,0.8)] hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all active:scale-95 cursor-pointer" type="button">
         <span class="text-amber-400 group-hover:scale-110 transition-transform relative z-10">★</span>
         <span class="btn-toggle-text relative z-10">VIEW HALL OF ACCLAIM [SHOW LEADERBOARD]</span>
         <span class="material-symbols-outlined text-base btn-toggle-icon group-hover:translate-y-0.5 transition-transform relative z-10">keyboard_arrow_down</span>
-        <span class="spark" aria-hidden="true"></span>
       </button>
     </div>
 
@@ -681,15 +776,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       <span>✦ CONNECTOME AUDIT LEDGER OPEN</span>
     </div>
     <div class="flex items-center gap-2">
-      <button class="btn-return-and-rate inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full border border-noir-gold bg-noir-900 text-noir-gold hover:bg-noir-gold hover:text-noir-950 text-xs font-mono tracking-wider transition-all shadow cursor-pointer font-bold sparkle-button" type="button">
-        <span class="relative z-10">✦ RATE ANOTHER SONG</span>
-        <span class="material-symbols-outlined text-sm relative z-10">arrow_upward</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="btn-return-and-rate inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full border border-noir-gold bg-noir-900 text-noir-gold hover:bg-noir-gold hover:text-noir-950 text-xs font-mono tracking-wider transition-all shadow cursor-pointer font-bold" type="button">
+        <span>✦ RATE ANOTHER SONG</span>
+        <span class="material-symbols-outlined text-sm">arrow_upward</span>
       </button>
-      <button class="close-leaderboard-btn inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-noir-700 bg-noir-900/90 hover:border-noir-gold text-noir-aged hover:text-noir-gold text-xs font-mono tracking-wider transition-all cursor-pointer sparkle-button" type="button">
-        <span class="material-symbols-outlined text-sm relative z-10">close</span>
-        <span class="relative z-10">COLLAPSE</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="close-leaderboard-btn inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-noir-700 bg-noir-900/90 hover:border-noir-gold text-noir-aged hover:text-noir-gold text-xs font-mono tracking-wider transition-all cursor-pointer" type="button">
+        <span class="material-symbols-outlined text-sm">close</span>
+        <span>COLLAPSE</span>
       </button>
     </div>
   </div>
@@ -715,33 +808,26 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     <!-- Category Tabs Filter -->
     <div class="flex flex-wrap items-center justify-center gap-2 max-w-4xl mx-auto mt-2" id="leaderboard-tabs" role="tablist">
-      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-gold bg-noir-gold text-noir-950 font-bold shadow active-tab-btn sparkle-button" data-category="all" type="button">
-        <span class="relative z-10">All Categories</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-gold bg-noir-gold text-noir-950 font-bold shadow active-tab-btn" data-category="all" type="button">
+        <span>All Categories</span>
       </button>
-      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 sparkle-button" data-category="recent" type="button">
-        <span class="relative z-10">⚡ Live / Recent Audits</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="recent" type="button">
+        <span>⚡ Live / Recent Audits</span>
       </button>
-      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 sparkle-button" data-category="affinity" type="button">
-        <span class="relative z-10">★ All-Time Affinity</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="affinity" type="button">
+        <span>★ All-Time Affinity</span>
       </button>
-      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 sparkle-button" data-category="courtship" type="button">
-        <span class="relative z-10">♫ Courtship Harmonics</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="courtship" type="button">
+        <span>♫ Courtship Harmonics</span>
       </button>
-      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 sparkle-button" data-category="organ" type="button">
-        <span class="relative z-10">⚡ Johnston's Vibration</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="organ" type="button">
+        <span>⚡ Johnston's Vibration</span>
       </button>
-      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60 sparkle-button" data-category="sleep" type="button">
-        <span class="relative z-10">☾ Nocturnal Slumber</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-noir-700 bg-noir-900/80 text-noir-aged hover:text-noir-gold hover:border-noir-gold/60" data-category="sleep" type="button">
+        <span>☾ Nocturnal Slumber</span>
       </button>
-      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-rose-900/60 bg-noir-900/80 text-rose-300 hover:text-rose-100 hover:border-rose-500 sparkle-button" data-category="swatter" type="button">
-        <span class="relative z-10">⚠ Dreadful Swatter Triggers</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="px-3 py-1.5 rounded-xl text-xs font-mono uppercase tracking-wider transition-all border border-rose-900/60 bg-noir-900/80 text-rose-300 hover:text-rose-100 hover:border-rose-500" data-category="swatter" type="button">
+        <span>⚠ Dreadful Swatter Triggers</span>
       </button>
     </div>
   </div>
@@ -757,14 +843,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       <span class="text-noir-gold">✦ ARCHIVE CITATION:</span> Drosophila Acoustic Courtship Atlas, Vol. XIV, 1934. All entries certified by Lord Drosophila, Esq.
     </div>
     <div class="flex items-center gap-2.5">
-      <button class="btn-return-and-rate inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border-2 border-noir-gold bg-noir-900 text-noir-gold hover:bg-noir-gold hover:text-noir-950 font-cinzel text-xs tracking-wider font-bold transition-all shadow cursor-pointer sparkle-button" type="button">
-        <span class="relative z-10">✦ RATE ANOTHER SONG ✦</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="btn-return-and-rate inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border-2 border-noir-gold bg-noir-900 text-noir-gold hover:bg-noir-gold hover:text-noir-950 font-cinzel text-xs tracking-wider font-bold transition-all shadow cursor-pointer" type="button">
+        <span>✦ RATE ANOTHER SONG ✦</span>
       </button>
-      <button class="close-leaderboard-btn inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-noir-gold/70 bg-noir-900/90 text-noir-gold hover:text-noir-creme hover:bg-noir-850 font-mono text-xs tracking-wider transition-all cursor-pointer sparkle-button" type="button">
-        <span class="material-symbols-outlined text-sm relative z-10">keyboard_arrow_up</span>
-        <span class="relative z-10">HIDE &amp; RETURN TO BOOTH</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="close-leaderboard-btn inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-noir-gold/70 bg-noir-900/90 text-noir-gold hover:text-noir-creme hover:bg-noir-850 font-mono text-xs tracking-wider transition-all cursor-pointer" type="button">
+        <span class="material-symbols-outlined text-sm">keyboard_arrow_up</span>
+        <span>HIDE &amp; RETURN TO BOOTH</span>
       </button>
     </div>
   </div>
@@ -812,9 +896,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     </div>
 
     <!-- DETAILED METRICS GAUGES GRID -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-6 stat-boxes-grid">
       <!-- Metric 1: Johnston's Organ -->
-      <div class="p-3.5 rounded-xl bg-noir-900/90 border border-noir-700/80 hover:border-noir-gold/60 transition-all">
+      <div class="p-3.5 rounded-xl bg-noir-900/90 border border-noir-700/80 hover:border-noir-gold/60 transition-all stat-box-card">
         <div class="text-[10px] font-mono text-noir-aged uppercase mb-1">JO-AB RESONANCE</div>
         <div class="font-cinzel text-xl font-bold text-noir-creme" id="metric-organ">99%</div>
         <p class="font-vintage text-[11px] text-noir-aged mt-1" id="metric-sub-organ">Harmonic Lock (120-250Hz)</p>
@@ -823,7 +907,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
       </div>
       <!-- Metric 2: Courtship Pulse -->
-      <div class="p-3.5 rounded-xl bg-noir-900/90 border border-noir-700/80 hover:border-noir-gold/60 transition-all">
+      <div class="p-3.5 rounded-xl bg-noir-900/90 border border-noir-700/80 hover:border-noir-gold/60 transition-all stat-box-card">
         <div class="text-[10px] font-mono text-noir-aged uppercase mb-1">COURTSHIP PULSE</div>
         <div class="font-cinzel text-xl font-bold text-noir-creme" id="metric-courtship">97%</div>
         <p class="font-vintage text-[11px] text-noir-aged mt-1" id="metric-sub-courtship">Wing extension trigger</p>
@@ -832,7 +916,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
       </div>
       <!-- Metric 3: Flight Motor -->
-      <div class="p-3.5 rounded-xl bg-noir-900/90 border border-noir-700/80 hover:border-noir-gold/60 transition-all">
+      <div class="p-3.5 rounded-xl bg-noir-900/90 border border-noir-700/80 hover:border-noir-gold/60 transition-all stat-box-card">
         <div class="text-[10px] font-mono text-noir-aged uppercase mb-1">FLIGHT MOTOR STIM.</div>
         <div class="font-cinzel text-xl font-bold text-noir-creme" id="metric-flight">94%</div>
         <p class="font-vintage text-[11px] text-noir-aged mt-1" id="metric-sub-flight">Thoracic vibration burst</p>
@@ -841,7 +925,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
       </div>
       <!-- Metric 4: Swatter Threat -->
-      <div class="p-3.5 rounded-xl bg-noir-900/90 border border-noir-700/80 hover:border-noir-gold/60 transition-all">
+      <div class="p-3.5 rounded-xl bg-noir-900/90 border border-noir-700/80 hover:border-noir-gold/60 transition-all stat-box-card">
         <div class="text-[10px] font-mono text-noir-aged uppercase mb-1">SWATTER ESCAPE</div>
         <div class="font-cinzel text-xl font-bold text-rose-400" id="metric-threat">02%</div>
         <p class="font-vintage text-[11px] text-noir-aged mt-1" id="metric-sub-threat">Dormant LC4 escape</p>
@@ -850,7 +934,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
       </div>
       <!-- Metric 5: Dopamine / Reward -->
-      <div class="p-3.5 rounded-xl bg-noir-900/90 border border-noir-700/80 hover:border-noir-gold/60 transition-all">
+      <div class="p-3.5 rounded-xl bg-noir-900/90 border border-noir-700/80 hover:border-noir-gold/60 transition-all stat-box-card">
         <div class="text-[10px] font-mono text-noir-aged uppercase mb-1">DOPAMINE SURGE</div>
         <div class="font-cinzel text-xl font-bold text-emerald-400" id="metric-dopamine">+3.8x</div>
         <p class="font-vintage text-[11px] text-noir-aged mt-1" id="metric-sub-dopamine">Mushroom body surge</p>
@@ -862,13 +946,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
     <!-- RE-EVALUATION PROMINENT ACTION -->
     <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
-      <button class="px-6 sm:px-8 py-3.5 rounded-xl font-cinzel text-xs sm:text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-850 via-noir-800 to-noir-850 text-noir-gold border-2 border-noir-gold hover:bg-noir-gold hover:text-noir-950 transition-all duration-300 shadow-[0_0_25px_rgba(212,175,55,0.3)] hover:shadow-[0_0_35px_rgba(212,175,55,0.7)] cursor-pointer sparkle-button" id="btn-reset-app" type="button">
-        <span class="relative z-10">✦ CHOOSE NEW SONG FOR RATING ✦</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="px-6 sm:px-8 py-3.5 rounded-xl font-cinzel text-xs sm:text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-850 via-noir-800 to-noir-850 text-noir-gold border-2 border-noir-gold hover:bg-noir-gold hover:text-noir-950 transition-all duration-300 shadow-[0_0_25px_rgba(212,175,55,0.3)] hover:shadow-[0_0_35px_rgba(212,175,55,0.7)] cursor-pointer" id="btn-reset-app" type="button">
+        <span>✦ CHOOSE NEW SONG FOR RATING ✦</span>
       </button>
-      <button class="px-6 sm:px-8 py-3.5 rounded-xl font-cinzel text-xs sm:text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-900 via-noir-850 to-noir-900 text-amber-300 border-2 border-amber-400/80 hover:border-amber-300 hover:text-noir-950 hover:bg-amber-300 transition-all duration-300 shadow-[0_0_20px_rgba(245,158,11,0.3)] cursor-pointer sparkle-button" id="btn-view-ledger" type="button">
-        <span class="relative z-10">★ VIEW ON LEADERBOARD ➔</span>
-        <span class="spark" aria-hidden="true"></span>
+      <button class="px-6 sm:px-8 py-3.5 rounded-xl font-cinzel text-xs sm:text-sm font-black tracking-widest uppercase bg-gradient-to-r from-noir-900 via-noir-850 to-noir-900 text-amber-300 border-2 border-amber-400/80 hover:border-amber-300 hover:text-noir-950 hover:bg-amber-300 transition-all duration-300 shadow-[0_0_20px_rgba(245,158,11,0.3)] cursor-pointer" id="btn-view-ledger" type="button">
+        <span>★ VIEW ON LEADERBOARD ➔</span>
       </button>
     </div>
   </div>
@@ -884,37 +966,23 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
 <!-- SCRIPT ENGINE -->
 <script>
-    // Universal Sparkle Button Enhancer (1930s Rubber Hose Noir Adaptation)
-    function applySparkleEffect(root = document) {
-      if (!root) return;
-      const buttons = [];
-      if (root.matches && root.matches('button:not(.no-sparkle)')) {
-        buttons.push(root);
-      }
-      if (root.querySelectorAll) {
-        root.querySelectorAll('button:not(.no-sparkle)').forEach(b => buttons.push(b));
-      }
-      buttons.forEach(btn => {
-        btn.classList.add('sparkle-button');
-        if (!btn.querySelector('.spark')) {
-          // Wrap any bare text nodes in a relative z-10 span so text remains razor sharp above the rotating spark beam
-          Array.from(btn.childNodes).forEach(node => {
-            if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) {
-              const span = document.createElement('span');
-              span.className = 'relative z-10';
-              span.textContent = node.textContent;
-              btn.replaceChild(span, node);
-            }
-          });
-          const spark = document.createElement('span');
-          spark.className = 'spark';
-          spark.setAttribute('aria-hidden', 'true');
-          btn.appendChild(spark);
-        }
-      });
+    // Change 3C: 1930s Inverted Archive Theme Controller
+    function toggleInvertedTheme() {
+      document.body.classList.toggle('theme-inverted');
+      const isInverted = document.body.classList.contains('theme-inverted');
+      try {
+        sessionStorage.setItem('flywire_theme_inverted', isInverted ? '1' : '0');
+      } catch (e) {}
     }
 
 window.addEventListener('DOMContentLoaded', () => {
+    // Restore Inverted 1930s Archive Palette if previously toggled
+    try {
+      if (sessionStorage.getItem('flywire_theme_inverted') === '1') {
+        document.body.classList.add('theme-inverted');
+      }
+    } catch (e) {}
+
     // Media & Visual Assets
     const IMG_HERO_IDLE = "/static/fly_hero.png";
     const IMG_GROOVING = "https://lh3.googleusercontent.com/aida/AEtjO1VmzVI8W5pIp7k_a9fZvL99_uu8llsB7zOf7hsF5t4eqGLoXpil_pqkcfLaraUkHDirQ25PwzYDdzElffAONEUe_6vEnE2b3TZVqKzPs-wmEkbYfCumd9RaF5jR7V5MQ2jm0UjtAcEzCIsDLzP4Y5ZeIs8VShdupqp7hutJsI8RdZwBkkeoGcb_jWGlaUa3Pue-YhuHf6f1vrMFvL0QWNLYcHBQpQ_bnjBCKQt-F6X6eEOILWHRmQezEjQ";
@@ -1191,7 +1259,7 @@ window.addEventListener('DOMContentLoaded', () => {
         tabBtnOnline.classList.remove('border-noir-gold', 'bg-noir-900', 'text-noir-gold', 'font-bold');
         tabBtnOnline.classList.add('border-noir-700', 'bg-noir-950', 'text-noir-aged');
 
-        typebarIcon.textContent = 'mic';
+        if (typebarIcon) typebarIcon.textContent = 'mic';
         typebarUploadSlot.classList.remove('hidden');
         onlineSearchInput.classList.add('hidden');
         typebarActionIcon.textContent = 'arrow_upward';
@@ -1205,7 +1273,7 @@ window.addEventListener('DOMContentLoaded', () => {
         tabBtnUpload.classList.remove('border-noir-gold', 'bg-noir-900', 'text-noir-gold', 'font-bold');
         tabBtnUpload.classList.add('border-noir-700', 'bg-noir-950', 'text-noir-aged');
 
-        typebarIcon.textContent = 'search';
+        if (typebarIcon) typebarIcon.textContent = 'search';
         typebarUploadSlot.classList.add('hidden');
         onlineSearchInput.classList.remove('hidden');
         onlineSearchInput.focus();
@@ -1292,14 +1360,13 @@ window.addEventListener('DOMContentLoaded', () => {
       unifiedConsolePane.classList.remove('hidden', 'opacity-0', 'scale-95');
       setSourceMode(currentSourceMode);
 
-      applySparkleEffect();
-
       if (showResetToast) {
         showToast("PREVIOUS AUDIT ARCHIVED • RECEPTORS ZEROED");
       }
     }
 
     btnResetApp.addEventListener('click', () => {
+      toggleInvertedTheme();
       resetToPristine(true);
       document.getElementById('stage-top').scrollIntoView({ behavior: 'smooth' });
     });
@@ -1545,6 +1612,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const btnViewLedger = document.getElementById('btn-view-ledger');
       if (btnViewLedger) {
         btnViewLedger.onclick = () => {
+          toggleInvertedTheme();
           metricsDashboard.classList.remove('translate-y-0');
           metricsDashboard.classList.add('translate-y-full');
 
@@ -1648,13 +1716,15 @@ window.addEventListener('DOMContentLoaded', () => {
       fileInput.click();
     });
 
-    typebarIcon.addEventListener('click', () => {
-      if (currentSourceMode === 'upload') {
-        fileInput.click();
-      } else {
-        onlineSearchInput.focus();
-      }
-    });
+    if (typebarIcon) {
+      typebarIcon.addEventListener('click', () => {
+        if (currentSourceMode === 'upload') {
+          fileInput.click();
+        } else {
+          onlineSearchInput.focus();
+        }
+      });
+    }
 
     // DRAG AND DROP HANDLING ON UNIFIED TYPEBAR
     ['dragenter', 'dragover'].forEach(name => {
@@ -1843,7 +1913,6 @@ window.addEventListener('DOMContentLoaded', () => {
           }
         });
       });
-      applySparkleEffect(onlineResultsContainer);
     }
 
     // LEADERBOARD / HALL OF ACCLAIM ENGINE
@@ -1947,7 +2016,6 @@ window.addEventListener('DOMContentLoaded', () => {
           </div>
         `;
         attachSongItemClickHandlers();
-        applySparkleEffect(leaderboardCardsContainer);
         return;
       }
 
@@ -2030,7 +2098,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
       leaderboardCardsContainer.innerHTML = cardsHtml;
       attachSongItemClickHandlers();
-      applySparkleEffect(leaderboardCardsContainer);
     }
 
     function renderSongItem(item, idx, colorClass, isRecent = false) {
@@ -2176,9 +2243,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Initial Leaderboard Fetch
     fetchLeaderboard();
-
-    // Initialize sparkle effects across all buttons
-    applySparkleEffect();
 });
 </script>
 </body>
