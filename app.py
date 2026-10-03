@@ -196,7 +196,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     /* ========================================================
        CHANGE 2 — 3D HOVER EFFECT FOR LEADERBOARD ENTRIES
        ======================================================== */
-    .category-card {
+    .category-card,
+    .leaderboard-panel {
       perspective: 1000px;
     }
 
@@ -207,6 +208,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       position: relative;
     }
 
+    .category-card:hover .song-item:hover,
+    .leaderboard-panel:hover .song-item:hover,
     .song-item:hover {
       transform: rotate3d(0.5, 1, 0, 15deg) translate3d(0px, -4px, 16px);
       box-shadow: 0 20px 30px -8px rgba(0, 0, 0, 0.85), 0 0 16px rgba(212, 175, 55, 0.35);
@@ -368,32 +371,45 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     /* ========================================================
        CHANGE 3C — INVERTED 1930s NOIR ARCHIVE PALETTE
        ======================================================== */
+    /* ========================================================
+       CHANGE 3C — INVERTED 1930s NOIR ARCHIVE PALETTE
+       ======================================================== */
     body.theme-inverted {
-      background-color: #f3ede2 !important;
+      background-color: #f5eee3 !important;
       color: #070b14 !important;
-      --bg-pattern-base: #f3ede2;
-      --bg-pattern-accent: rgba(140, 105, 20, 0.22);
-      --btn-glow-inner: rgba(153, 115, 22, 0.35);
-      --btn-glow-outer: rgba(153, 115, 22, 0.15);
-      --btn-hover-glow-inner: rgba(153, 115, 22, 0.6);
-      --btn-hover-glow-outer: rgba(153, 115, 22, 0.3);
-      --btn-sweep-color: rgba(180, 135, 25, 0.35);
+      --bg-pattern-base: #f5eee3;
+      --bg-pattern-accent: rgba(160, 120, 30, 0.18);
+      --btn-glow-inner: rgba(168, 128, 26, 0.3);
+      --btn-glow-outer: rgba(168, 128, 26, 0.12);
+      --btn-hover-glow-inner: rgba(168, 128, 26, 0.5);
+      --btn-hover-glow-outer: rgba(168, 128, 26, 0.25);
+      --btn-sweep-color: rgba(191, 160, 84, 0.4);
     }
 
     body.theme-inverted .film-vignette {
-      box-shadow: inset 0 0 130px rgba(180, 160, 130, 0.55), inset 0 0 220px rgba(140, 120, 90, 0.45) !important;
+      box-shadow: inset 0 0 130px rgba(180, 160, 130, 0.45), inset 0 0 220px rgba(140, 120, 90, 0.35) !important;
     }
 
     body.theme-inverted .spotlight-radial {
-      background: radial-gradient(ellipse at 50% 12%, rgba(153, 115, 22, 0.14) 0%, rgba(200, 190, 170, 0.1) 40%, transparent 75%) !important;
+      background: radial-gradient(ellipse at 50% 12%, rgba(168, 128, 26, 0.12) 0%, rgba(200, 190, 170, 0.08) 40%, transparent 75%) !important;
     }
 
+    /* Reset dark gradient images on all containers so parchment colors take full effect */
+    body.theme-inverted [class*="bg-gradient-to-"],
+    body.theme-inverted .bg-gradient-to-b,
+    body.theme-inverted .bg-gradient-to-r,
+    body.theme-inverted .bg-gradient-to-br,
+    body.theme-inverted .bg-gradient-to-t {
+      background-image: none !important;
+    }
+
+    /* Base dark surface overrides */
     body.theme-inverted .bg-noir-950,
     body.theme-inverted .bg-noir-950\/95,
     body.theme-inverted .bg-noir-950\/90,
     body.theme-inverted .bg-noir-950\/85,
     body.theme-inverted .bg-noir-950\/80 {
-      background-color: rgba(250, 247, 240, 0.95) !important;
+      background-color: #faf6ee !important;
     }
 
     body.theme-inverted .bg-noir-900,
@@ -401,17 +417,103 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     body.theme-inverted .bg-noir-900\/90,
     body.theme-inverted .bg-noir-900\/85,
     body.theme-inverted .bg-noir-900\/80 {
-      background-color: rgba(242, 235, 222, 0.95) !important;
+      background-color: #f5eee2 !important;
     }
 
     body.theme-inverted .bg-noir-850 {
-      background-color: #e5dac7 !important;
+      background-color: #ebe0cf !important;
     }
 
     body.theme-inverted .bg-noir-800 {
-      background-color: #d9cdb7 !important;
+      background-color: #e0d4c0 !important;
     }
 
+    /* Hero viewfinder casing in inverted theme */
+    body.theme-inverted #hero-frame-container > div {
+      background-image: linear-gradient(to bottom, #faf6ee, #f1e7d6, #e7dcba) !important;
+      background-color: #f1e7d6 !important;
+      border-color: #bfa054 !important;
+      box-shadow: 0 20px 45px rgba(110, 85, 40, 0.2) !important;
+    }
+
+    body.theme-inverted #hero-frame-container .bg-noir-700 {
+      background-color: #bfa054 !important;
+    }
+
+    body.theme-inverted #film-reel-title {
+      color: #8c6d17 !important;
+    }
+
+    body.theme-inverted #hero-subject-tag {
+      background-color: #ffffff !important;
+      color: #070b14 !important;
+      border-color: #cbbea9 !important;
+    }
+
+    body.theme-inverted #hero-audit-status {
+      background-color: #ffffff !important;
+      color: #8c6d17 !important;
+      border-color: #cbbea9 !important;
+    }
+
+    body.theme-inverted #media-viewport {
+      background-color: #ede3d2 !important;
+      border-color: #bfa054 !important;
+    }
+
+    /* Leaderboard panels & category cards */
+    body.theme-inverted .category-card,
+    body.theme-inverted .leaderboard-panel {
+      background-image: linear-gradient(to bottom, #fcf9f2 0%, #f4eee2 100%) !important;
+      background-color: #f7f2e7 !important;
+      border-color: #cbbea9 !important;
+      box-shadow: 0 15px 35px rgba(100, 80, 40, 0.1) !important;
+    }
+
+    body.theme-inverted .category-card h3,
+    body.theme-inverted .leaderboard-panel h3 {
+      color: #070b14 !important;
+    }
+
+    body.theme-inverted .category-card p,
+    body.theme-inverted .leaderboard-panel p,
+    body.theme-inverted .category-card span:not([class*="text-rose"]):not([class*="text-emerald"]):not([class*="bg-amber"]) {
+      color: #3b4861 !important;
+    }
+
+    body.theme-inverted .category-card .border-noir-800 {
+      border-top-color: #ded3c0 !important;
+    }
+
+    /* Individual song items in inverted theme */
+    body.theme-inverted .song-item {
+      background-color: #faf6ee !important;
+      border-color: #ded3c0 !important;
+      color: #070b14 !important;
+      box-shadow: 0 2px 6px rgba(100, 80, 40, 0.05) !important;
+    }
+
+    body.theme-inverted .song-item:hover {
+      background-color: #ffffff !important;
+      border-color: #a8801a !important;
+      box-shadow: 0 16px 28px -6px rgba(120, 95, 45, 0.22), 0 0 14px rgba(168, 128, 26, 0.25) !important;
+    }
+
+    body.theme-inverted .song-item .font-playfair {
+      color: #070b14 !important;
+    }
+
+    body.theme-inverted .song-item .font-mono {
+      color: #4b5873 !important;
+    }
+
+    body.theme-inverted .highlight-recent-item {
+      background-color: #fff9ec !important;
+      border-color: #bfa054 !important;
+      box-shadow: 0 0 14px rgba(191, 160, 84, 0.25) !important;
+    }
+
+    /* Typography & Text overrides */
     body.theme-inverted .text-noir-creme {
       color: #070b14 !important;
     }
@@ -431,6 +533,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       color: #8c6d17 !important;
     }
 
+    /* Borders */
     body.theme-inverted .border-noir-gold,
     body.theme-inverted .border-noir-gold\/90,
     body.theme-inverted .border-noir-gold\/80,
@@ -450,6 +553,46 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       border-color: #cbbea9 !important;
     }
 
+    /* Mode selector row */
+    body.theme-inverted #mode-toggle-group {
+      background-color: #eae0cf !important;
+      border-color: #cbbea9 !important;
+    }
+
+    body.theme-inverted .mode-btn:not(.bg-noir-gold) {
+      color: #3b4861 !important;
+    }
+
+    /* Header & Section headings */
+    body.theme-inverted header h1 {
+      color: #070b14 !important;
+      text-shadow: none !important;
+      filter: none !important;
+    }
+
+    body.theme-inverted header p {
+      color: #4b5873 !important;
+    }
+
+    body.theme-inverted header .bg-noir-900\/85 {
+      background-color: #f0e6d6 !important;
+      border-color: #cbbea9 !important;
+    }
+
+    body.theme-inverted #leaderboard-section h2 {
+      color: #070b14 !important;
+    }
+
+    body.theme-inverted #leaderboard-section p {
+      color: #4b5873 !important;
+    }
+
+    body.theme-inverted #leaderboard-section .bg-noir-900\/90 {
+      background-color: #faf6ee !important;
+      border-color: #cbbea9 !important;
+    }
+
+    /* Unified typebar console */
     body.theme-inverted #unified-typebar {
       background-color: rgba(250, 247, 240, 0.95) !important;
       border-color: #b5923b !important;
@@ -468,15 +611,134 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       color: #3f4c66 !important;
     }
 
+    /* Buttons in inverted theme */
+    body.theme-inverted .close-leaderboard-btn,
+    body.theme-inverted #btn-skip-video,
+    body.theme-inverted .search-tag,
+    body.theme-inverted #tab-btn-online {
+      background-color: #faf6ee !important;
+      color: #3b4861 !important;
+      border-color: #cbbea9 !important;
+    }
+
+    body.theme-inverted #btn-reset-app {
+      background-image: linear-gradient(to right, #f4ede0, #ede4d3, #f4ede0) !important;
+      background-color: #f4ede0 !important;
+      color: #8c6d17 !important;
+      border-color: #8c6d17 !important;
+      box-shadow: 0 0 20px rgba(140, 109, 23, 0.25) !important;
+    }
+
+    body.theme-inverted #btn-view-ledger {
+      background-image: linear-gradient(to right, #fdf6e9, #f7ebd4, #fdf6e9) !important;
+      background-color: #fdf6e9 !important;
+      color: #966708 !important;
+      border-color: #b5923b !important;
+      box-shadow: 0 0 20px rgba(181, 146, 59, 0.25) !important;
+    }
+
+    body.theme-inverted #preset-daft {
+      background-color: #f7f1e5 !important;
+      border-color: #a8801a !important;
+      color: #8c6d17 !important;
+    }
+
+    body.theme-inverted #preset-discord {
+      background-color: #fcf0f0 !important;
+      border-color: #dc2626 !important;
+      color: #b91c1c !important;
+    }
+
+    /* Danger / Swatter cards */
+    body.theme-inverted .category-card[data-cat="swatter"] {
+      border-color: rgba(220, 38, 38, 0.45) !important;
+      background-image: linear-gradient(to bottom, #fff7f7 0%, #fbf0f0 100%) !important;
+    }
+
+    body.theme-inverted .text-rose-300,
+    body.theme-inverted .text-rose-400 {
+      color: #b91c1c !important;
+    }
+
+    body.theme-inverted .border-rose-900\/80,
+    body.theme-inverted .border-rose-900\/60,
+    body.theme-inverted .border-rose-700\/80 {
+      border-color: #dc2626 !important;
+    }
+
+    /* Scorecard & metrics dashboard */
+    body.theme-inverted #metrics-dashboard {
+      background-color: #f7f2e7 !important;
+      border-top-color: #a8801a !important;
+      box-shadow: 0 -25px 60px rgba(120, 95, 45, 0.22) !important;
+      color: #070b14 !important;
+    }
+
+    body.theme-inverted #metrics-dashboard .bg-gradient-to-r {
+      background-image: linear-gradient(to right, #fcf8f0, #f2eadb, #fcf8f0) !important;
+      background-color: #f7f1e5 !important;
+      border-color: #bfa054 !important;
+    }
+
+    body.theme-inverted #metrics-verdict-title {
+      color: #070b14 !important;
+    }
+
+    body.theme-inverted #metrics-verdict-comment {
+      color: #2b3548 !important;
+    }
+
+    body.theme-inverted #metrics-affinity-score {
+      color: #8c6d17 !important;
+      -webkit-text-fill-color: #8c6d17 !important;
+    }
+
+    body.theme-inverted .stat-box-card {
+      background-color: #faf6ee !important;
+      border-color: #ded3c0 !important;
+      color: #070b14 !important;
+    }
+
+    body.theme-inverted .stat-box-card:hover {
+      background-color: #ffffff !important;
+      border-color: #a8801a !important;
+      box-shadow: 0 16px 28px -6px rgba(120, 95, 45, 0.22), 0 0 14px rgba(168, 128, 26, 0.25) !important;
+    }
+
+    body.theme-inverted .stat-box-card .font-cinzel {
+      color: #070b14 !important;
+    }
+
+    body.theme-inverted .stat-box-card .font-vintage {
+      color: #4b5873 !important;
+    }
+
+    body.theme-inverted .stat-box-card .bg-noir-950 {
+      background-color: #eae0cf !important;
+      border-color: #cbbea9 !important;
+    }
+
+    body.theme-inverted #loading-card {
+      background-color: #f7f2e7 !important;
+      border-color: #a8801a !important;
+      color: #070b14 !important;
+    }
+
+    body.theme-inverted #reveal-popup > div {
+      background-color: #faf6ee !important;
+      border-color: #a8801a !important;
+      color: #070b14 !important;
+      box-shadow: 0 20px 50px rgba(100, 80, 40, 0.3) !important;
+    }
+
+    body.theme-inverted #reveal-modal-desc {
+      color: #2b3548 !important;
+    }
+
+    /* Footer in inverted theme */
     body.theme-inverted footer {
       background-color: rgba(240, 233, 220, 0.9) !important;
       border-top-color: #cbbea9 !important;
-    }
-
-    body.theme-inverted #metrics-dashboard {
-      background-color: rgba(246, 240, 230, 0.98) !important;
-      border-top-color: #a8801a !important;
-      box-shadow: 0 -25px 60px rgba(140, 120, 90, 0.35) !important;
     }
 </style>
 </head>
@@ -2002,7 +2264,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (filterCategory === 'recent') {
         const itemsToDisplay = recentAudits.length > 0 ? recentAudits : currentLeaderboard.slice(0, 6);
         leaderboardCardsContainer.innerHTML = `
-          <div class="col-span-1 md:col-span-2 p-5 rounded-2xl bg-gradient-to-b from-noir-900 via-noir-850 to-noir-950 border-2 border-noir-gold shadow-2xl relative overflow-hidden">
+          <div class="col-span-1 md:col-span-2 p-5 rounded-2xl bg-gradient-to-b from-noir-900 via-noir-850 to-noir-950 border-2 border-noir-gold shadow-2xl relative overflow-hidden leaderboard-panel">
             <div class="flex items-center justify-between border-b border-noir-700/60 pb-3 mb-3">
               <div class="flex items-center gap-2.5">
                 <span class="inline-block w-2.5 h-2.5 rounded-full bg-noir-gold animate-ping"></span>
@@ -2025,7 +2287,7 @@ window.addEventListener('DOMContentLoaded', () => {
       // If viewing all and there are recent audits, display the live audit strip!
       if (filterCategory === 'all' && recentAudits.length > 0) {
         cardsHtml += `
-          <div class="col-span-1 md:col-span-2 p-4 rounded-2xl bg-gradient-to-r from-noir-900 via-noir-850 to-noir-900 border-2 border-noir-gold/80 shadow-[0_0_20px_rgba(212,175,55,0.25)] relative overflow-hidden">
+          <div class="col-span-1 md:col-span-2 p-4 rounded-2xl bg-gradient-to-r from-noir-900 via-noir-850 to-noir-900 border-2 border-noir-gold/80 shadow-[0_0_20px_rgba(212,175,55,0.25)] relative overflow-hidden leaderboard-panel">
             <div class="flex items-center justify-between border-b border-noir-700/60 pb-2 mb-2">
               <div class="flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
@@ -2070,7 +2332,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const displayItems = [...recentsInCat, ...nonRecentsInCat].slice(0, 6);
 
         return `
-          <div class="category-card p-4 sm:p-5 rounded-2xl bg-gradient-to-b from-noir-900/90 to-noir-950/95 border-2 ${cat.border} shadow-[0_15px_35px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col justify-between" data-cat="${cat.id}">
+          <div class="category-card leaderboard-panel p-4 sm:p-5 rounded-2xl bg-gradient-to-b from-noir-900/90 to-noir-950/95 border-2 ${cat.border} shadow-[0_15px_35px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col justify-between" data-cat="${cat.id}">
             <div class="absolute -top-10 -right-10 w-24 h-24 ${cat.glow} rounded-full blur-xl pointer-events-none"></div>
             <div>
               <div class="flex items-center justify-between border-b border-noir-700/60 pb-2.5 mb-2.5">
